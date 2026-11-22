@@ -75,16 +75,21 @@ button{font-family:inherit;color:var(--ink);border:0;cursor:pointer;touch-action
 .chip.ok b{color:#3f8a3a}.chip.bad b{color:#d8481c}
 .lv{position:relative;width:86%;height:10px;margin-top:4px;border-radius:999px;background:linear-gradient(90deg,#FFD9C9,#EAF8EC 35%,#EAF8EC 65%,#FFD9C9)}
 .lv i{position:absolute;top:-3px;left:50%;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#2EC4B6;box-shadow:0 0 0 2px #fff;transition:left .25s}
-#hint{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 272px);text-align:center;font-weight:700;font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(43,33,64,.5);pointer-events:none}
-#tray{position:absolute;left:10px;right:10px;bottom:calc(var(--sb) + 100px);background:#fff;border-radius:24px;padding:8px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;min-height:76px;box-shadow:0 4px 0 rgba(43,33,64,.15)}
-#tray .it{position:relative;aspect-ratio:1;border-radius:16px;background:#F4F1EC;touch-action:none}
-#tray .it img{width:100%;height:100%;pointer-events:none}
-#tray .empty{grid-column:1/-1}
-#tray .it.req::before{content:'';position:absolute;top:5px;left:5px;width:12px;height:12px;border-radius:50%;background:var(--or);box-shadow:0 0 0 2px #fff}
-#tray .it.power{box-shadow:inset 0 0 0 3px var(--ink)}
-#tray .empty{align-self:center;font-weight:700;font-size:15px;padding:0 8px;opacity:.6}
+#hint{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 200px);text-align:center;font-weight:700;font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(43,33,64,.5);pointer-events:none}
+#qpanel{position:absolute;left:10px;right:10px;bottom:calc(var(--sb) + 98px);background:#fff;border-radius:22px;padding:8px 10px 10px;box-shadow:0 4px 0 rgba(43,33,64,.15)}
+#qpanel .bar{margin:0 0 8px;height:12px;background:#F4F1EC}
+#qtime{background:var(--or)}
+.qrow{display:flex;align-items:center;gap:8px}
+.qrow>small{font-size:13px;font-weight:700;opacity:.6}
+#qnext{display:flex;gap:6px;flex:1}
+#qnext div{position:relative;width:52px;height:52px;border-radius:14px;background:#F4F1EC}
+#qnext div:first-child{box-shadow:inset 0 0 0 3px var(--yl)}
+#qnext div.req::before{content:'';position:absolute;top:4px;left:4px;width:11px;height:11px;border-radius:50%;background:var(--or);box-shadow:0 0 0 2px #fff;z-index:1}
+#qnext img{width:100%;height:100%}
+.qend{font-weight:700;font-size:14px;opacity:.6}
+#qleft{font-size:14px;font-weight:900;opacity:.7;white-space:nowrap}
 #packBar{position:absolute;left:10px;right:10px;bottom:calc(var(--sb) + 16px);display:flex;gap:10px}
-#closeBtn{flex:1;height:70px;font-size:26px;display:flex;align-items:center;justify-content:center;gap:10px}
+#packBar .btn{flex:1;height:70px;font-size:19px;display:flex;align-items:center;justify-content:center;gap:8px}
 
 /* крышка */
 #lidTop{position:absolute;top:calc(var(--st) + 70px);left:16px;right:16px}
@@ -97,7 +102,13 @@ button{font-family:inherit;color:var(--ink);border:0;cursor:pointer;touch-action
 /* дорога */
 #prog{position:absolute;top:calc(var(--st) + 70px);left:14px;right:190px;height:16px;background:#fff;border-radius:999px}
 #prog>div{height:100%;width:0;background:var(--yl);border-radius:999px}
-#prog>span{position:absolute;top:-8px;width:30px;height:30px;margin-left:-15px;border-radius:9px;background:var(--or);box-shadow:inset 0 -7px 0 #C9481C}
+#prog>span{position:absolute;top:-8px;width:30px;height:30px;margin-left:-15px;border-radius:9px;background:var(--or);box-shadow:inset 0 -7px 0 #C9481C;z-index:2}
+#prog .rv{position:absolute;top:-4px;width:20px;height:20px;margin-left:-10px;border-radius:6px;box-shadow:0 0 0 2px #fff;left:0}
+#race{position:absolute;top:calc(var(--st) + 100px);left:14px;display:flex;align-items:center;gap:6px;background:#fff;border-radius:16px;padding:4px 12px 4px 10px;box-shadow:0 4px 0 rgba(43,33,64,.15);border:3px solid #FF6B35}
+#race.first{border-color:#7BC96F}
+#race>b{font-size:30px;font-weight:900;line-height:1}
+#race small{font-size:11px;font-weight:700;line-height:1.1;opacity:.7}
+#race .stk{margin-left:8px;font-size:16px;font-weight:900;color:#d9a92f}
 #xray{position:absolute;top:calc(var(--st) + 66px);right:12px;width:168px;height:118px;border-radius:16px;box-shadow:0 0 0 4px #fff;pointer-events:none}
 #xray span{position:absolute;left:8px;top:6px;font-size:12px;font-weight:700;color:#8EDCEB}
 #ctrl{position:absolute;left:12px;right:12px;bottom:calc(var(--sb) + 22px);display:flex;gap:10px;align-items:flex-end}
@@ -156,10 +167,14 @@ svg.i{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:2.8;stroke
     <div class="chip" id="chFrag"><small>Хрупкое</small><b>—</b></div>
     <div class="chip" id="chBal"><small>Баланс</small><div class="lv"><i id="bub"></i></div></div>
   </div>
-  <div id="hint">Тащи вещи в чемодан.<br>Нажми на вещь в чемодане — повернётся</div>
-  <div id="tray"></div>
+  <div id="hint">Веди пальцем по чемодану — вещь поедет следом.<br>Отпусти — упадёт</div>
+  <div id="qpanel">
+    <div class="bar"><div id="qtime"></div></div>
+    <div class="qrow"><small>Дальше</small><div id="qnext"></div><span id="qleft"></span></div>
+  </div>
   <div id="packBar">
-    <button class="btn green" id="closeBtn"><svg viewBox="0 0 40 32" width="36" height="30"><polygon points="4,8 36,8 36,30 4,30" fill="#FF6B35"/><polygon points="4,8 36,8 36,14 4,14" fill="#FF9A6B"/><polygon points="12,8 16,8 16,30 12,30" fill="#FFD166"/><polygon points="24,8 28,8 28,30 24,30" fill="#FFD166"/></svg>Закрыть!</button>
+    <button class="btn yellow" id="rotBtn"><svg class="i" viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M20 12a8 8 0 1 1-2.3-5.7L20 8.5"/><path d="M20 3.5v5h-5"/></svg>Повернуть</button>
+    <button class="btn" id="skipBtn"><svg class="i" viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 13l4 4M14 13l-4 4"/></svg>Оставить дома</button>
   </div>
 </div>
 
@@ -169,7 +184,8 @@ svg.i{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:2.8;stroke
 </div>
 
 <div id="journey" class="layer">
-  <div id="prog" class="pe-none"><div id="progFill"></div><span id="progDot"></span></div>
+  <div id="prog" class="pe-none"><div id="progFill"></div><i class="rv" id="rv0" style="background:#5aa9e6"></i><i class="rv" id="rv1" style="background:#9b6bcc"></i><i class="rv" id="rv2" style="background:#7bc96f"></i><span id="progDot"></span></div>
+  <div id="race" class="pe-none"><b id="placeN">1</b><small>место<br>из 4</small><span class="stk">★ <b id="stickN">0</b></span></div>
   <div id="xray"><span>Рентген</span></div>
   <div id="ctrl">
     <button class="btn arrow" id="leftBtn" aria-label="Назад"><svg class="i" viewBox="0 0 24 24" style="width:40px;height:40px"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -530,6 +546,22 @@ B.borscht = () => {
   return g;
 };
 
+B.rug = () => {
+  const g = new G.Group();
+  g.add(rot(mesh(cyl(0.24, 0.24, 2.5, 8), 0xc0304a), 0, 0, Math.PI / 2));
+  [-0.9, -0.3, 0.3, 0.9].forEach((x) => g.add(rot(at(mesh(cyl(0.25, 0.25, 0.1, 8), 0xffd166), x, 0, 0), 0, 0, Math.PI / 2)));
+  g.add(rot(at(mesh(cyl(0.1, 0.1, 0.02, 8), 0x7a1f30), 1.26, 0, 0), 0, 0, Math.PI / 2));
+  return g;
+};
+
+B.kettlebell = () => {
+  const g = new G.Group();
+  g.add(at(mesh(ico(0.3, 1), 0x3a3150), 0, -0.05, 0));
+  g.add(at(mesh(new G.TorusGeometry(0.16, 0.06, 5, 10, Math.PI), 0x3a3150), 0, 0.2, 0));
+  g.add(at(mesh(box(0.22, 0.12, 0.02), 0xffd166), 0, -0.02, 0.29));
+  return g;
+};
+
 B.egg = () => {
   const g = new G.Group();
   const e = mesh(ico(0.12, 1), 0xfff8ea); e.scale.set(0.85, 1.1, 0.85); g.add(e);
@@ -556,6 +588,8 @@ const ITEMS = {
   thermos:   { name: 'Термос', mass: 1.2, lost: 'Термос улетел!', build: B.thermos },
   guitar:    { name: 'Гитара', mass: 1.5, fragile: true, thr: 6.5, broke: 'Гитара: дзынь!', lost: 'Гитара улетела!', build: B.guitar },
   borscht:   { name: 'Борщ', mass: 1.5, fragile: true, thr: 5, broke: 'Борщ разлился!', lost: 'Борщ улетел!', build: B.borscht },
+  rug:       { name: 'Ковёр', mass: 2, soft: true, lost: 'Ковёр улетел!', build: B.rug },
+  kettlebell:{ name: 'Гиря', mass: 6, lost: 'Гиря улетела. Как?!', build: B.kettlebell },
   egg:       { name: 'Яйцо', mass: 0.1, fragile: true, thr: 2.2, shape: 'sphere', broke: 'Яичница!', lost: 'Яйцо улетело!', build: B.egg },
 };
 
@@ -586,10 +620,10 @@ function makeShards(color = 0xffffff, w = 0.6, d = 0.5) {
 }
 
 // ---------- ЧЕМОДАН ----------
-function makeSuitcase(W, D, H, T, LIDH) {
+function makeSuitcase(W, D, H, T, LIDH, pal = {}) {
   const g = new G.Group();
   const shell = new G.Group(); g.add(shell);
-  const OR = 0xff7043, DK = 0xc9481c, LN = 0x8c4a6e, YL = 0xffd166;
+  const OR = pal.main ?? 0xff7043, DK = pal.dark ?? 0xc9481c, LN = 0x8c4a6e, YL = pal.strap ?? 0xffd166, LT = pal.light ?? 0xff9a6b;
   shell.add(at(mesh(box(W + 2 * T, T, D + 2 * T), OR), 0, -T / 2, 0));
   shell.add(at(mesh(box(W, 0.02, D), 0xa35c80), 0, 0.01, 0));
   shell.add(at(mesh(box(W + 2 * T, H, T), OR), 0, H / 2, D / 2 + T / 2));
@@ -619,7 +653,7 @@ function makeSuitcase(W, D, H, T, LIDH) {
   lidPivot.position.set(0, H, -D / 2 - T);
   g.add(lidPivot);
   const lid = new G.Group(); lidPivot.add(lid);
-  lid.add(at(mesh(box(W + 2 * T, LIDH, D + 2 * T), 0xff9a6b), 0, LIDH / 2, D / 2 + T));
+  lid.add(at(mesh(box(W + 2 * T, LIDH, D + 2 * T), LT), 0, LIDH / 2, D / 2 + T));
   lid.add(at(mesh(box(W, 0.03, D), LN), 0, 0.0, D / 2 + T));
   [-0.85, 0.85].forEach((x) => lid.add(at(mesh(box(0.24, LIDH + 0.02, 0.03), YL), x, LIDH / 2, D + 2 * T + 0.01)));
   [-0.85, 0.85].forEach((x) => lid.add(at(mesh(box(0.24, 0.03, D + 2 * T), 0xffe08f), x, LIDH + 0.01, D / 2 + T)));
@@ -766,20 +800,84 @@ function makeRock(s = 1, color = 0x9aa5b8) {
   return m;
 }
 
+function makeDoor(h = 4.6, color = 0xff6b35) {
+  const g = new G.Group();
+  g.add(at(mesh(box(0.5, h, 2.4), color), 0, h / 2, 0));
+  for (let y = 0.4; y < h; y += 0.9) g.add(at(mesh(box(0.52, 0.35, 2.42), 0xffffff), 0, y, 0));
+  return g;
+}
+function makePost(h = 5.2) {
+  const g = new G.Group();
+  g.add(at(mesh(box(0.35, h, 0.35), 0x5a4e73), 0, h / 2, 0));
+  g.add(at(mesh(ico(0.25), 0xff3b3b, { emissive: 0xff2200, emissiveIntensity: 0.6 }), 0, h + 0.1, 0));
+  return g;
+}
+function makeSack(color = 0xb8783f) {
+  const g = new G.Group();
+  const s = mesh(ico(0.75, 1), color); s.scale.set(1, 1.15, 1); g.add(s);
+  g.add(at(mesh(cone(0.3, 0.4, 6), color), 0, 0.9, 0));
+  g.add(at(googly(0.16), -0.2, 0.25, 0.62));
+  g.add(at(googly(0.16), 0.2, 0.28, 0.62));
+  return g;
+}
+function makeSpring() {
+  const g = new G.Group();
+  for (let i = 0; i < 3; i++) g.add(rot(at(mesh(new G.TorusGeometry(0.55, 0.08, 4, 10), 0x9aa5b8), 0, 0.15 + i * 0.18, 0), Math.PI / 2, 0, 0));
+  g.add(at(mesh(cyl(0.8, 0.8, 0.14, 10), 0xff3b3b), 0, 0.65, 0));
+  return g;
+}
+function makeBoost(len = 3) {
+  const g = new G.Group();
+  for (let x = -len / 2 + 0.5; x < len / 2; x += 0.9) {
+    const a = new G.Shape();
+    a.moveTo(0, 0.5); a.lineTo(0.45, 0); a.lineTo(0, -0.5); a.lineTo(-0.25, -0.5); a.lineTo(0.2, 0); a.lineTo(-0.25, 0.5);
+    const m = new G.Mesh(new G.ShapeGeometry(a), M(0xffd166, { emissive: 0xffa000, emissiveIntensity: 0.5 }));
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(x, 0.03, 0);
+    m.scale.set(1.4, 2.2, 1);
+    g.add(m);
+  }
+  return g;
+}
+function makeSticker(color = 0xffd166) {
+  const st = new G.Shape();
+  for (let i = 0; i < 10; i++) { const r = i % 2 ? 0.2 : 0.45; const a = i / 10 * Math.PI * 2 + Math.PI / 2; const x = Math.cos(a) * r, y = Math.sin(a) * r; i ? st.lineTo(x, y) : st.moveTo(x, y); }
+  const geo = new G.ExtrudeGeometry(st, { depth: 0.12, bevelEnabled: false });
+  geo.center();
+  const m = new G.Mesh(geo, M(color, { emissive: 0xffa000, emissiveIntensity: 0.35 }));
+  m.castShadow = true;
+  return m;
+}
+function makePennant(color) {
+  const g = new G.Group();
+  g.add(at(mesh(cyl(0.03, 0.03, 1.2, 4), 0xffffff), 0, 0.6, 0));
+  const f = mesh(cone(0.25, 0.7, 3), color);
+  f.rotation.z = -Math.PI / 2;
+  f.position.set(0.35, 1.0, 0);
+  g.add(f);
+  return g;
+}
+
 // ===== levels.js =====
-// Уровни. track — куски дороги слева направо.
+// Уровни.
+// items — что клиент просил; extras — что он «подсовывает» по ходу (всё не влезет).
+// track — куски трассы слева направо.
 const LEVELS = [
   {
     id: 'dacha',
     title: 'Бабушка едет на дачу',
     who: 'Бабушка Зина',
     client: { dress: 0x9b6bcc, hat: 'scarf', hatColor: 0xff4d4d, glasses: true },
-    items: ['jar', 'chicken', 'cake', 'teapot', 'watermelon', 'pillow', 'cat', 'duck', 'fen', 'gnome'],
+    items: ['jar', 'chicken', 'cake', 'teapot', 'pillow', 'cat', 'duck', 'fen'],
+    extras: ['watermelon', 'rug', 'kettlebell', 'gnome', 'jar', 'watermelon'],
     required: ['jar', 'chicken', 'cake', 'teapot'],
+    packTime: 9,
     theme: 'village',
-    gravity: 9.8, packGravity: 9.8, friction: 0.35, par: 40,
-    track: [['flat', 10], ['bump'], ['flat', 6], ['gap', 2.4], ['flat', 7], ['pigeon'], ['flat', 5], ['up', 1.0], ['flat', 6],
-      ['bump'], ['flat', 3], ['bump'], ['flat', 5], ['down', 1.0], ['flat', 4], ['gap', 3], ['flat', 6], ['boxes'], ['flat', 6], ['pigeon'], ['flat', 6], ['finish']],
+    gravity: 9.8, packGravity: 9.8, friction: 0.35,
+    rivalSkill: 0.8,
+    track: [['flat', 9], ['sticker'], ['bump'], ['flat', 4], ['door'], ['flat', 5], ['gap', 2.4], ['flat', 4], ['boost'], ['flat', 5],
+      ['pendulum'], ['flat', 4], ['pigeon'], ['flat', 3], ['spring'], ['flat', 2], ['gap', 3], ['flat', 5], ['drop', 12], ['flat', 3],
+      ['up', 1.0], ['flat', 4], ['slick', 6], ['door'], ['flat', 4], ['boxes'], ['flat', 4], ['boost'], ['flat', 6], ['finish']],
     win: 'Всё довезла! Внучки, бегите сюда!',
     jarLine: 'Огурчики целы — значит, всё хорошо!',
     fail: 'Ну... главное, сама доехала.',
@@ -789,12 +887,16 @@ const LEVELS = [
     title: 'Тётя летит на море',
     who: 'Тётя Люда',
     client: { dress: 0xff7eb6, hat: 'sunhat', sunglasses: true },
-    items: ['swimsuit', 'swimsuit', 'swimsuit', 'flamingo', 'watermelon', 'cake', 'jar', 'fen', 'pillow', 'duck'],
+    items: ['swimsuit', 'swimsuit', 'swimsuit', 'flamingo', 'watermelon', 'cake', 'pillow', 'duck', 'fen'],
+    extras: ['jar', 'rug', 'kettlebell', 'swimsuit', 'swimsuit', 'gnome'],
     required: ['swimsuit', 'swimsuit', 'swimsuit', 'flamingo', 'watermelon'],
+    packTime: 8,
     theme: 'airport',
-    gravity: 9.8, packGravity: 9.8, friction: 0.3, par: 35,
-    track: [['flat', 8], ['belt', 12], ['glove'], ['flat', 5], ['gap', 2.6], ['belt', 10], ['pigeon'], ['flat', 4], ['inflate'], ['flat', 4],
-      ['gap', 4], ['flat', 5], ['up', 1.2], ['belt', 10], ['boxes'], ['flat', 4], ['gap', 4.5], ['flat', 5], ['glove'], ['flat', 8], ['finish']],
+    gravity: 9.8, packGravity: 9.8, friction: 0.3,
+    rivalSkill: 0.85,
+    track: [['flat', 8], ['belt', 8], ['door'], ['belt', 6], ['glove'], ['flat', 4], ['gap', 2.6], ['reverse', 7], ['flat', 3], ['sticker'],
+      ['drop', 12], ['pigeon'], ['flat', 3], ['inflate'], ['boost'], ['flat', 3], ['gap', 4], ['flat', 4], ['door'], ['belt', 8],
+      ['pendulum'], ['flat', 4], ['reverse', 6], ['flat', 3], ['spring'], ['flat', 2], ['gap', 4.5], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
     win: 'Тридцать купальников! Ну то есть три. Сойдёт!',
     jarLine: 'Огурцы на пляже — это классика!',
     fail: 'А я всё равно загорю!',
@@ -804,12 +906,16 @@ const LEVELS = [
     title: 'Дед на рыбалку',
     who: 'Дед Митя',
     client: { dress: 0x2b5aa0, hat: 'ushanka', beard: true },
-    items: ['fish', 'rod', 'thermos', 'ice', 'cat', 'pillow', 'jar', 'duck', 'fen'],
+    items: ['fish', 'rod', 'thermos', 'ice', 'cat', 'pillow', 'duck', 'fen'],
+    extras: ['jar', 'kettlebell', 'rug', 'gnome', 'watermelon', 'kettlebell'],
     required: ['fish', 'rod', 'thermos'],
+    packTime: 7,
     theme: 'ice',
-    gravity: 9.8, packGravity: 9.8, friction: 0.03, par: 40,
-    track: [['flat', 10], ['down', 1.5], ['flat', 8], ['gap', 2.2], ['flat', 6], ['bump'], ['flat', 6], ['gap', 2.6], ['flat', 5], ['up', 1.2],
-      ['flat', 4], ['pigeon'], ['flat', 5], ['down', 1.2], ['flat', 6], ['gap', 3], ['flat', 5], ['boxes'], ['flat', 8], ['finish']],
+    gravity: 9.8, packGravity: 9.8, friction: 0.03,
+    rivalSkill: 0.88,
+    track: [['flat', 9], ['down', 1.5], ['flat', 5], ['door'], ['flat', 4], ['gap', 2.2], ['flat', 4], ['boost'], ['flat', 3], ['pendulum'],
+      ['flat', 4], ['gap', 2.6], ['flat', 4], ['spring'], ['flat', 2], ['gap', 3.2], ['flat', 4], ['up', 1.2], ['flat', 3], ['drop', 12],
+      ['flat', 3], ['door'], ['flat', 3], ['pigeon'], ['flat', 4], ['down', 1.2], ['flat', 4], ['gap', 3], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
     win: 'И рыба на месте, и удочка! Зачем рыба на рыбалку — не спрашивайте.',
     jarLine: 'Огурчик к чаю — самое то.',
     fail: 'Ничего. Порыбачу без всего.',
@@ -819,17 +925,28 @@ const LEVELS = [
     title: 'Космонавт на Луну',
     who: 'Космонавт Гоша',
     client: { suit: true, dress: 0xf4f4f8, hat: 'helmet' },
-    items: ['borscht', 'guitar', 'chicken', 'jar', 'cat', 'fen', 'pillow', 'gnome'],
+    items: ['borscht', 'guitar', 'chicken', 'cat', 'fen', 'pillow', 'jar'],
+    extras: ['kettlebell', 'rug', 'gnome', 'watermelon', 'teapot', 'kettlebell'],
     required: ['borscht', 'guitar', 'chicken'],
+    packTime: 7,
     theme: 'moon',
-    gravity: 3.2, packGravity: 2.2, friction: 0.35, par: 45,
-    track: [['flat', 10], ['gap', 4], ['flat', 6], ['bump'], ['flat', 5], ['gap', 5], ['flat', 5], ['up', 2.0], ['flat', 6], ['gap', 6],
-      ['flat', 6], ['pigeon'], ['flat', 4], ['down', 2.0], ['flat', 5], ['gap', 5], ['flat', 6], ['boxes'], ['flat', 8], ['finish']],
+    gravity: 3.2, packGravity: 2.2, friction: 0.35,
+    rivalSkill: 0.9,
+    track: [['flat', 10], ['gap', 4], ['flat', 5], ['door'], ['flat', 4], ['drop', 14], ['gap', 5], ['flat', 4], ['spring'], ['flat', 2],
+      ['gap', 6], ['flat', 4], ['pendulum'], ['flat', 4], ['up', 2.0], ['flat', 4], ['boost'], ['gap', 6], ['flat', 4], ['slick', 6],
+      ['door'], ['flat', 3], ['pigeon'], ['flat', 3], ['down', 2.0], ['flat', 4], ['gap', 5], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
     win: 'Борщ на Луне! Поехали!',
     jarLine: 'Огурцы в космосе! Бабушка будет довольна.',
     fail: 'Хьюстон, у нас проблемы.',
     grandmaCameo: true,
   },
+];
+
+// Соперники в гонке.
+const RIVALS = [
+  { name: 'Чемодан Гены', pal: { main: 0x5aa9e6, dark: 0x3e7fc0, light: 0x8cc7f2, strap: 0xffffff }, flag: 0x2b5aa0 },
+  { name: 'Баул тёти Нюры', pal: { main: 0x9b6bcc, dark: 0x7a4fb0, light: 0xbb92e0, strap: 0xffd166 }, flag: 0xff4d4d },
+  { name: 'Сумка туриста', pal: { main: 0x7bc96f, dark: 0x5fae55, light: 0xa3dd98, strap: 0x2b2140 }, flag: 0xffd166 },
 ];
 
 // ===== main.js =====
@@ -930,7 +1047,7 @@ const FACES = LEVELS.map((L) => snapshot(makePerson(L.client).userData.head, 0.8
 // ---------- физика: материалы ----------
 const MAT = {
   item: new CANNON.Material('item'), soft: new CANNON.Material('soft'), wall: new CANNON.Material('wall'),
-  suit: new CANNON.Material('suit'), ground: new CANNON.Material('ground'),
+  suit: new CANNON.Material('suit'), ground: new CANNON.Material('ground'), slick: new CANNON.Material('slick'),
 };
 
 // ---------- состояние ----------
@@ -1233,7 +1350,10 @@ function resetLevel() {
   $('#menu .title').style.display = '';
 }
 
-// ---------- 1. УПАКОВКА ----------
+// ---------- 1. УПАКОВКА: клиент кидает вещи по одной ----------
+const THROW_LINES = ['И ещё вот это!', 'Ой, чуть не забыла!', 'Это обязательно!', 'Без этого никак!', 'Положи-ка и это!', 'Сверху, сверху!'];
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
 function startLevel(i) {
   resetLevel();
   S.li = i;
@@ -1248,8 +1368,15 @@ function startLevel(i) {
   S.env.add(sc.group);
   sc.lidPivot.rotation.x = LID_OPEN;
   S.lidAngle = LID_OPEN;
-  S.insts = S.L.items.map((id) => newInst(id));
-  S.stats = { falls: 0, pigeons: 0, eggs: 0, ejected: 0, broken: 0, jumps: 0, inflated: false, melted: false, squashed: 0 };
+  // очередь: сначала то, что просили, вперемешку с «подсунутым»
+  const main = shuffle(S.L.items.map((id) => newInst(id)));
+  const extra = S.L.extras.map((id) => { const x = newInst(id); x.extra = true; return x; });
+  const q = [];
+  main.forEach((m, k) => { q.push(m); if (k % 2 === 1 && extra.length) q.push(extra.shift()); });
+  q.push(...extra);
+  S.insts = q.slice();
+  S.queue = q;
+  S.stats = { falls: 0, pigeons: 0, eggs: 0, ejected: 0, broken: 0, jumps: 0, inflated: false, melted: false, squashed: 0, stickers: 0, home: 0, stomps: 0 };
   S.journeyT = 0;
   $('#levelTitle').textContent = S.L.title;
   $('#clientFace').src = FACES[i];
@@ -1260,33 +1387,33 @@ function startLevel(i) {
   S.pack = null;
   S.packAtClose = null;
   S.checkT = 0;
-  renderTray();
+  S.drag = false;
+  // клиент стоит за чемоданом и кидает вещи
+  S.thrower = makePerson(S.L.client);
+  S.thrower.scale.setScalar(1.05);
+  S.thrower.position.set(-2.6, BOT, -2.4);
+  S.thrower.rotation.y = 0.5;
+  S.env.add(S.thrower);
   renderOrder();
+  renderQueue();
   packCheck();
   showLayers('top', 'pack');
   requestAnimationFrame(() => setViewOffset(packOffset()));
-  later(0.5, () => toast('Уложи всё ниже жёлтой линии!', 2.2));
-  later(3.0, () => toast('Хрупкое — к мягкому!', 2));
+  later(0.4, () => toast('Лови вещи и укладывай ниже жёлтой линии!', 2.2));
+  later(2.4, nextItem);
 }
 function packOffset() {
   const top = $('#checks').getBoundingClientRect().bottom;
-  const bottom = window.innerHeight - $('#tray').getBoundingClientRect().top;
+  const bottom = window.innerHeight - $('#qpanel').getBoundingClientRect().top;
   return (bottom - top) / 2;
 }
 
-function renderTray() {
-  const tray = $('#tray');
-  const left = S.insts.filter((i) => !i.inBag && !i.lost);
+function renderQueue() {
+  const nx = S.queue.slice(0, 3);
   const req = new Set(S.L.required);
-  tray.innerHTML = '';
-  if (!left.length) { tray.innerHTML = '<span class="empty">Всё в чемодане! Жми «Закрыть»</span>'; return; }
-  for (const inst of left) {
-    const d = document.createElement('div');
-    d.className = 'it' + (req.has(inst.id) ? ' req' : '') + (inst.def.power ? ' power' : '');
-    d.innerHTML = `<img src="${THUMBS[inst.id]}" alt="${inst.def.name}">`;
-    d.addEventListener('pointerdown', (e) => { e.preventDefault(); initAudio(); beginHold(inst, e, true); });
-    tray.appendChild(d);
-  }
+  $('#qnext').innerHTML = nx.map((i) => `<div class="${req.has(i.id) && !i.extra ? 'req' : ''}"><img src="${THUMBS[i.id]}" alt="${i.def.name}"></div>`).join('')
+    || '<span class="qend">Последняя!</span>';
+  $('#qleft').textContent = S.queue.length ? 'ещё ' + S.queue.length : '';
 }
 function renderOrder() {
   const have = {};
@@ -1304,9 +1431,8 @@ const ray = new THREE.Raycaster();
 const ndc = new THREE.Vector2();
 const rimPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -H);
 function setNdc(x, y) { ndc.x = x / window.innerWidth * 2 - 1; ndc.y = -(y / window.innerHeight) * 2 + 1; }
-// точка на уровне края чемодана; палец поднимаем, чтобы он не закрывал вещь
 function pointOnRim(e) {
-  const lift = e.pointerType === 'touch' ? 70 : 0;
+  const lift = e.pointerType === 'touch' ? 60 : 0;
   setNdc(e.clientX, e.clientY - lift);
   ray.setFromCamera(ndc, camera);
   const p = new THREE.Vector3();
@@ -1350,7 +1476,7 @@ function landing(x, z, o) {
   }
   return maxY;
 }
-// для тапа: самое низкое свободное место и лучший поворот
+// когда время вышло: самое низкое свободное место
 function autoPlace(inst) {
   let best = null;
   for (const [yaw, lie] of orientations(inst)) {
@@ -1367,104 +1493,59 @@ function autoPlace(inst) {
 }
 
 function makeGhost() {
-  const g = new THREE.Mesh(new THREE.BoxGeometry(1, 0.03, 1), new THREE.MeshBasicMaterial({ color: 0x7bc96f, transparent: true, opacity: 0.55, depthWrite: false }));
-  const col = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1, 0.04), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 }));
-  g.userData.col = col;
-  return g;
+  return new THREE.Mesh(new THREE.BoxGeometry(1, 0.03, 1), new THREE.MeshBasicMaterial({ color: 0x7bc96f, transparent: true, opacity: 0.55, depthWrite: false }));
 }
 function updateGhost() {
   const h = S.held;
   if (!h) return;
   const o = orient(h.inst);
+  clampXZ(o, h.target);
   const land = landing(h.target.x, h.target.z, o);
-  h.land = land;
   const tooHigh = land + 2 * o.hy > H + 0.03;
-  h.target.y = land + o.hy + 0.5;
+  h.target.y = land + o.hy + 0.6;
   S.ghost.scale.set(o.hx * 2, 1, o.hz * 2);
   S.ghost.position.set(h.target.x, land + 0.02, h.target.z);
   S.ghost.material.color.setHex(tooHigh ? 0xff4d4d : 0x7bc96f);
   S.ghost.visible = true;
 }
 
-function beginHold(inst, e, fromTray) {
+// следующая вещь летит из рук клиента
+function nextItem() {
   if (S.phase !== 'pack' || S.held) return;
-  if (!fits(inst)) { const op = orientations(inst)[0]; if (op) { inst.yaw = op[0]; inst.lie = op[1]; } }
-  S.held = { inst, fromTray, sx: e.clientX, sy: e.clientY, moved: false, target: new THREE.Vector3(0, H + 1, 0) };
-  if (fromTray) {
-    inst.mesh.scale.set(inst.sx, inst.sy, inst.sz);
-    inst.mesh.position.set(0, H + 1.6, 1.4);
-    S.suit.add(inst.mesh);
-  } else {
-    S.held.target.set(inst.mesh.position.x, 0, inst.mesh.position.z);
-    clampXZ(orient(inst), S.held.target);
-  }
+  if (!S.queue.length) { finishPacking(); return; }
+  const inst = S.queue.shift();
+  renderQueue();
+  const ops = orientations(inst);
+  if (!fits(inst) && ops[0]) { inst.yaw = ops[0][0]; inst.lie = ops[0][1]; }
+  inst.mesh.scale.set(inst.sx, inst.sy, inst.sz);
   inst.mesh.quaternion.copy(orient(inst).q);
+  const hand = new THREE.Vector3(-2.0, 1.6, -2.0);
+  inst.mesh.position.copy(hand);
+  S.suit.add(inst.mesh);
+  const target = new THREE.Vector3(rnd(-0.6, 0.6), 0, rnd(-0.3, 0.3));
+  S.held = { inst, target, t: 0, time: S.L.packTime, flying: true };
   if (!S.ghost) S.ghost = makeGhost();
   S.suit.add(S.ghost);
   updateGhost();
-  sfx.pick();
-  haptic('light');
+  flyTo(inst.mesh, S.held.target.clone(), 0.45, 1.4, () => { if (S.held && S.held.inst === inst) S.held.flying = false; });
+  const ud = S.thrower.userData;
+  ud.armR.rotation.z = 2.8; ud.armL.rotation.z = -1.2;
+  later(0.3, () => { ud.armR.rotation.z = 0.35; ud.armL.rotation.z = -0.35; });
+  sfx.whoosh();
+  if (inst.extra && Math.random() < 0.75) toast(pick(THROW_LINES), 1.3);
+  else if (inst.def.alive === 'hop') toast('Ко-ко-ко!', 0.9);
+  $('#qtime').style.transition = 'none';
+  $('#qtime').style.width = '100%';
 }
-
-window.addEventListener('pointermove', (e) => {
-  const h = S.held;
-  if (!h) return;
-  if (!h.moved && Math.hypot(e.clientX - h.sx, e.clientY - h.sy) > 10) h.moved = true;
-  if (h.moved) {
-    const p = pointOnRim(e);
-    if (p) { clampXZ(orient(h.inst), p); h.target.x = p.x; h.target.z = p.z; updateGhost(); }
-  }
-});
-window.addEventListener('pointerup', (e) => {
-  const h = S.held;
-  if (!h) return;
-  const trayTop = $('#tray').getBoundingClientRect().top;
-  if (h.moved && e.clientY > trayTop) {
-    S.suit.remove(h.inst.mesh);
-    h.inst.inBag = false;
-    S.held = null;
-    S.ghost.visible = false;
-    renderTray(); renderOrder();
-    return;
-  }
-  if (!h.moved) {
-    if (h.fromTray) {
-      const b = autoPlace(h.inst);
-      if (b) { h.target.x = b.x; h.target.z = b.z; }
-    } else {
-      // тап по вещи в чемодане — следующий поворот
-      const ops = orientations(h.inst);
-      const k = ops.findIndex(([y, l]) => Math.abs(y - h.inst.yaw) < 0.01 && l === h.inst.lie);
-      const nx = ops[(k + 1) % ops.length];
-      if (ops.length > 1) { h.inst.yaw = nx[0]; h.inst.lie = nx[1]; clampXZ(orient(h.inst), h.target); sfx.tick(); }
-      else toast('По-другому не влезет!', 1);
-    }
-  }
-  dropHeld();
-});
-window.addEventListener('pointercancel', () => { if (S.held) dropHeld(); });
-
-canvas.addEventListener('pointerdown', (e) => {
-  if (S.phase !== 'pack' || S.held) return;
-  const lift = e.pointerType === 'touch' ? 0 : 0;
-  setNdc(e.clientX, e.clientY - lift);
-  ray.setFromCamera(ndc, camera);
-  const meshes = bag().filter((i) => i.body).map((i) => i.mesh);
-  const hit = ray.intersectObjects(meshes, true)[0];
-  if (!hit) return;
-  const inst = bag().find((i) => { let p = hit.object; while (p) { if (p === i.mesh) return true; p = p.parent; } return false; });
-  if (!inst) return;
-  removeBody(inst);
-  inst.inBag = false;
-  beginHold(inst, e, false);
-  renderOrder();
-});
 
 function dropHeld() {
   const h = S.held;
   if (!h) return;
   const inst = h.inst;
+  const fl = flyers.findIndex((f) => f.obj === inst.mesh);
+  if (fl >= 0) flyers.splice(fl, 1);
   const o = orient(inst);
+  clampXZ(o, h.target);
   const land = landing(h.target.x, h.target.z, o);
   const pos = new CANNON.Vec3(h.target.x, land + o.hy + 0.1, h.target.z);
   inst.mesh.position.set(pos.x, pos.y, pos.z);
@@ -1473,24 +1554,97 @@ function dropHeld() {
   inst.body.velocity.set(0, -0.5, 0);
   inst.inBag = true;
   S.held = null;
+  S.drag = false;
   if (S.ghost) S.ghost.visible = false;
   sfx.drop();
-  renderTray();
   renderOrder();
   if (!S.firstDrop) { S.firstDrop = true; $('#hint').style.opacity = 0; }
-  if (inst.def.alive === 'hop' && Math.random() < 0.5) later(0.5, () => toast('Ко-ко-ко!', 0.9));
-  if (inst.id === 'cat') later(0.6, () => toast('Кот лёг. Это его место.', 1.4));
+  if (inst.id === 'cat') later(0.5, () => toast('Кот лёг. Это его место.', 1.3));
   S.checkT = 0.3;
+  later(0.45, nextItem);
 }
+
+function leaveHome() {
+  const h = S.held;
+  if (!h || S.phase !== 'pack') return;
+  const inst = h.inst;
+  const fl = flyers.findIndex((f) => f.obj === inst.mesh);
+  if (fl >= 0) flyers.splice(fl, 1);
+  inst.home = true;
+  S.stats.home++;
+  S.held = null;
+  S.drag = false;
+  if (S.ghost) S.ghost.visible = false;
+  S.suit.updateMatrixWorld(true);
+  S.env.attach(inst.mesh);
+  flyBallistic(inst.mesh, new THREE.Vector3(rnd(4, 6), rnd(5, 7), rnd(-1, 1)), new THREE.Vector3(rnd(-6, 6), rnd(-6, 6), rnd(-6, 6)));
+  sfx.pop();
+  const req = S.L.required.includes(inst.id) && !inst.extra;
+  toast(req ? 'Это же было в заказе!..' : pick(['Остаётся дома!', 'Не в этот раз!', 'Обойдёмся!']), 1.1);
+  later(0.4, nextItem);
+}
+
+function rotateHeld() {
+  const h = S.held;
+  if (!h || S.phase !== 'pack') return;
+  const ops = orientations(h.inst);
+  if (ops.length < 2) { toast('По-другому не влезет!', 1); return; }
+  const k = ops.findIndex(([y, l]) => Math.abs(y - h.inst.yaw) < 0.01 && l === h.inst.lie);
+  const nx = ops[(k + 1) % ops.length];
+  h.inst.yaw = nx[0]; h.inst.lie = nx[1];
+  updateGhost();
+  sfx.tick();
+}
+
+function finishPacking() {
+  if (S.phase !== 'pack') return;
+  $('#qtime').style.width = '0%';
+  toast(bag().length ? 'Всё! Закрываем!' : 'Пустой чемодан?!', 1.2);
+  later(1.0, startLid);
+}
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (S.phase !== 'pack' || !S.held) return;
+  initAudio();
+  S.drag = true;
+  S.held.flying = false;
+  const fl = flyers.findIndex((f) => f.obj === S.held.inst.mesh);
+  if (fl >= 0) flyers.splice(fl, 1);
+  const p = pointOnRim(e);
+  if (p) { S.held.target.x = p.x; S.held.target.z = p.z; updateGhost(); }
+});
+window.addEventListener('pointermove', (e) => {
+  if (!S.drag || !S.held) return;
+  const p = pointOnRim(e);
+  if (p) { S.held.target.x = p.x; S.held.target.z = p.z; updateGhost(); }
+});
+window.addEventListener('pointerup', () => { if (S.drag && S.held) dropHeld(); S.drag = false; });
+window.addEventListener('pointercancel', () => { if (S.drag && S.held) dropHeld(); S.drag = false; });
+$('#rotBtn').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); initAudio(); rotateHeld(); });
+$('#skipBtn').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); initAudio(); leaveHome(); });
 
 function updateHeld(dt) {
   const h = S.held;
   if (!h) return;
   const m = h.inst.mesh;
-  m.position.lerp(h.target, 1 - Math.exp(-dt * 16));
-  const o = orient(h.inst);
-  const wob = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.sin(S.time * 7) * 0.06, 0, Math.cos(S.time * 6) * 0.06));
-  m.quaternion.copy(wob.multiply(o.q));
+  if (!h.flying) {
+    m.position.lerp(h.target, 1 - Math.exp(-dt * 16));
+    const wob = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.sin(S.time * 7) * 0.06, 0, Math.cos(S.time * 6) * 0.06));
+    m.quaternion.copy(wob.multiply(orient(h.inst).q));
+  }
+  // таймер: не успел — вещь ложится сама
+  h.time -= dt;
+  const k = Math.max(0, h.time / S.L.packTime);
+  const bar = $('#qtime');
+  bar.style.transition = 'none';
+  bar.style.width = (k * 100) + '%';
+  bar.style.background = k < 0.3 ? '#FF4D4D' : '#FF6B35';
+  if (h.time < 2 && Math.floor(h.time * 2) !== Math.floor((h.time + dt) * 2)) sfx.tick();
+  if (h.time <= 0) {
+    if (!S.drag) { const b = autoPlace(h.inst); if (b) { h.target.x = b.x; h.target.z = b.z; } }
+    toast('Бах! Само упало!', 0.8);
+    dropHeld();
+  }
 }
 
 // ---------- цели упаковки ----------
@@ -1584,7 +1738,6 @@ function makeLidLine() {
   return g;
 }
 
-$('#closeBtn').addEventListener('click', () => { initAudio(); startLid(); });
 
 // ---------- 2. КРЫШКА ----------
 function topOf(inst) {
@@ -1602,7 +1755,6 @@ function topOf(inst) {
 }
 function startLid() {
   if (S.phase !== 'pack') return;
-  if (!bag().length) { toast('Сначала положи что-нибудь!'); return; }
   if (S.held) dropHeld();
   S.phase = 'lid';
   packCheck();
@@ -1757,9 +1909,9 @@ const THEMES = {
   moon: { bg: 0x1b1530, top: 0xc9cfd8, side: 0x8a90a0, back: 0x9aa5b8 },
 };
 
-function groundBox(x0, x1, ytop, color, sideColor, belt = 0) {
+function groundBox(x0, x1, ytop, color, sideColor, belt = 0, mat = MAT.ground) {
   const len = x1 - x0, cx = (x0 + x1) / 2, hy = 4;
-  const b = new CANNON.Body({ mass: 0, material: MAT.ground, shape: new CANNON.Box(new CANNON.Vec3(len / 2, hy, 3)) });
+  const b = new CANNON.Body({ mass: 0, material: mat, shape: new CANNON.Box(new CANNON.Vec3(len / 2, hy, 3)) });
   b.position.set(cx, ytop - hy, 0);
   b.userData = { belt, top: ytop };
   S.outer.addBody(b);
@@ -1767,7 +1919,7 @@ function groundBox(x0, x1, ytop, color, sideColor, belt = 0) {
   S.env.add(at(mesh(box(len, hy * 2 - 0.35, 6), sideColor), cx, ytop - 0.35 - (hy * 2 - 0.35) / 2, 0));
   if (belt) {
     for (let x = x0 + 0.5; x < x1 - 0.3; x += 1.2) {
-      const s = at(mesh(box(0.25, 0.04, 5.6), 0xffd166), x, ytop + 0.01, 0);
+      const s = at(mesh(box(0.25, 0.04, 5.6), belt > 0 ? 0xffd166 : 0xff4d4d), x, ytop + 0.01, 0);
       S.env.add(s);
       S.belts.push({ m: s, x0, x1, base: x, speed: belt });
     }
@@ -1865,11 +2017,43 @@ function decorate(theme, x0, x1, y) {
 function buildTrack(L) {
   const th = THEMES[L.theme];
   let x = 0, y = 0, minY = 0;
-  const tr = { startX: 4, finishX: 0, gloves: [], triggers: [], gaps: [] };
+  const tr = { startX: 4, finishX: 0, gloves: [], triggers: [], gaps: [], doors: [], pends: [], drops: [], boosts: [], springs: [], stickers: [] };
+  S.track = tr;
   S.belts = [];
+  const doorColor = { village: 0xb8783f, airport: 0x2ec4b6, ice: 0x5aa9e6, moon: 0x9aa5b8 }[L.theme];
+  const sackColor = { village: 0xb8783f, airport: 0x5a4e73, ice: 0xffffff, moon: 0x8a90a0 }[L.theme];
   for (const [type, a] of L.track) {
     if (type === 'flat') { groundBox(x, x + a, y, th.top, th.side); x += a; }
-    else if (type === 'gap') { tr.gaps.push([x, x + a]); x += a; }
+    else if (type === 'gap') {
+      tr.gaps.push([x, x + a]);
+      const hgt = 3.2 * (L.gravity < 5 ? 1.2 : 1);
+      addSticker(x + a / 2, y + hgt); addSticker(x + a / 2 - 1.3, y + hgt - 0.6); addSticker(x + a / 2 + 1.3, y + hgt - 0.6);
+      x += a;
+    }
+    else if (type === 'door') { groundBox(x, x + 6, y, th.top, th.side); addDoor(x + 3, y, doorColor); x += 6; }
+    else if (type === 'pendulum') { groundBox(x, x + 7, y, th.top, th.side); addPendulum(x + 3.5, y, sackColor); x += 7; }
+    else if (type === 'drop') { groundBox(x, x + a, y, th.top, th.side); tr.drops.push({ x0: x, x1: x + a, y, t: 0 }); x += a; }
+    else if (type === 'boost') {
+      groundBox(x, x + 4, y, th.top, th.side);
+      const m = makeBoost(4); m.position.set(x + 2, y, 0); S.env.add(m);
+      tr.boosts.push({ x0: x, x1: x + 4, y });
+      x += 4;
+    }
+    else if (type === 'spring') {
+      groundBox(x, x + 3, y, th.top, th.side);
+      const m = makeSpring(); m.position.set(x + 1.5, y, 0); m.scale.setScalar(1.3); S.env.add(m);
+      tr.springs.push({ x0: x + 0.2, x1: x + 2.8, y, m });
+      const hg = L.gravity < 5 ? 1.25 : 1;
+      for (let k = 0; k < 5; k++) addSticker(x + 2 + k * 1.5, y + (5.5 - Math.abs(k - 2) * 0.7) * hg);
+      x += 3;
+    }
+    else if (type === 'reverse') { groundBox(x, x + a, y, 0x3a3150, 0x2b2140, -5); x += a; }
+    else if (type === 'slick') {
+      groundBox(x, x + a, y, th.top, th.side, 0, MAT.slick);
+      S.env.add(at(mesh(box(a - 0.4, 0.05, 5.2), 0x8edceb, { roughness: 0.1 }), x + a / 2, y + 0.03, 0));
+      x += a;
+    }
+    else if (type === 'sticker') { for (let k = 0; k < 4; k++) addSticker(x + 1 + k * 1.3, y + 1.6); }
     else if (type === 'bump') { groundBox(x, x + 4, y, th.top, th.side); rampBox(x + 0.5, y, x + 2, y + 0.55, th.top); rampBox(x + 2, y + 0.55, x + 3.5, y, th.top); x += 4; }
     else if (type === 'up') { const l = Math.max(3, a * 2.6); groundBox(x, x + l, y, th.top, th.side); rampBox(x, y, x + l, y + a, th.top); y += a; x += l; }
     else if (type === 'down') { const l = Math.max(3, a * 2.6); groundBox(x, x + l, y - a, th.top, th.side); rampBox(x, y, x + l, y - a, th.top); y -= a; x += l; }
@@ -1898,6 +2082,246 @@ function buildTrack(L) {
   return tr;
 }
 
+// ---------- гонка: соперники и препятствия ----------
+function groundInfo(b) {
+  for (const c of S.outer.contacts) {
+    if (c.bi !== b && c.bj !== b) continue;
+    const ny = c.bi === b ? -c.ni.y : c.ni.y;
+    if (ny > 0.5) {
+      const gb = c.bi === b ? c.bj : c.bi;
+      return { ok: true, gb, belt: (gb.userData && gb.userData.belt) || 0 };
+    }
+  }
+  return { ok: false, gb: null, belt: 0 };
+}
+function uprightTorque(b, grounded) {
+  const ang = 2 * Math.atan2(b.quaternion.z, b.quaternion.w);
+  const a = Math.atan2(Math.sin(ang), Math.cos(ang));
+  const e = a > 0.5 ? a - 0.5 : a < -0.5 ? a + 0.5 : 0;
+  if (Math.abs(a) < 1.4) b.torque.z += (-e * (grounded ? 90 : 30) - b.angularVelocity.z * (grounded ? 4 : 1.5)) * (b.mass / 10);
+}
+// ускорители и батуты работают для всех чемоданов
+function padsFor(b, st, grounded) {
+  const x = b.position.x;
+  for (const p of S.track.boosts) {
+    if (grounded && x > p.x0 && x < p.x1) {
+      b.velocity.x = Math.max(b.velocity.x, 13.5);
+      st.boostT = 0.7;
+      if (st === S && !p.said) { p.said = true; toast('Ж-ж-ж!', 0.7); sfx.whoosh(); haptic('medium'); }
+    }
+  }
+  for (const p of S.track.springs) {
+    if (x > p.x0 && x < p.x1 && b.position.y - HALF_Y < p.y + 1.0 && b.velocity.y <= 0.5 && (st.springCd || 0) <= 0) {
+      b.velocity.y = 12.5 * Math.sqrt(S.g / 9.8);
+      st.springCd = 0.6;
+      p.t = 0.25;
+      sfx.boing();
+      if (st === S) haptic('medium');
+    }
+  }
+}
+function addDoor(x, y, color) {
+  S.env.add(at(makePost(), x, y, 2.4));
+  S.env.add(at(makePost(), x, y, -2.4));
+  const door = makeDoor(4.8, color);
+  S.env.add(door);
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 6), new THREE.MeshStandardMaterial({ color: 0x7bc96f, emissive: 0x2ec400, emissiveIntensity: 0.9 }));
+  lamp.position.set(x, y + 5.7, 2.4);
+  S.env.add(lamp);
+  const b = new CANNON.Body({ mass: 0, type: CANNON.Body.KINEMATIC, shape: new CANNON.Box(new CANNON.Vec3(0.25, 2.4, 1.2)) });
+  b.position.set(x, y + 2.4, 0);
+  S.outer.addBody(b);
+  S.track.doors.push({ x, y, b, m: door, lamp, period: rnd(3.4, 4.0), ph: rnd(0, 4), open: 1 });
+}
+function doorOpen(d, t) {
+  // цикл: открыто — закрывается — закрыто — открывается
+  const p = ((t + d.ph) % d.period) / d.period;
+  if (p < 0.45) return 1;
+  if (p < 0.53) return 1 - (p - 0.45) / 0.08;
+  if (p < 0.92) return 0;
+  return (p - 0.92) / 0.08;
+}
+function addPendulum(x, y, color) {
+  const pivot = new THREE.Vector3(x, y + 7.6, 0);
+  S.env.add(at(mesh(box(0.3, 7.8, 0.3), 0x8a5a2b), x, y + 3.9, -2.6));
+  S.env.add(at(mesh(box(0.4, 0.4, 5.6), 0x8a5a2b), x, y + 7.8, 0));
+  const sack = makeSack(color);
+  S.env.add(sack);
+  const rope = mesh(cyl(0.05, 0.05, 1, 4), 0x6b4a2b);
+  S.env.add(rope);
+  const b = new CANNON.Body({ mass: 0, type: CANNON.Body.KINEMATIC, shape: new CANNON.Sphere(0.85) });
+  b.userData = { pendulum: true };
+  S.outer.addBody(b);
+  S.track.pends.push({ pivot, L: 5.0, b, sack, rope, w: rnd(1.7, 2.1), ph: rnd(0, 6) });
+}
+function addSticker(x, y) {
+  const m = makeSticker(pick([0xffd166, 0xff7eb6, 0x8edceb, 0x7bc96f]));
+  m.position.set(x, y, 0.4);
+  S.env.add(m);
+  S.track.stickers.push({ m, x, y, got: false });
+}
+function addRival(cfg, x, y, skill) {
+  const sc = makeSuitcase(W, D, H, T, LIDH, cfg.pal);
+  const pn = makePennant(cfg.flag); pn.position.set(-1.1, TOP, 0); sc.group.add(pn);
+  sc.group.add(at(googly(0.24), -0.45, H * 0.72, D / 2 + T + 0.12));
+  sc.group.add(at(googly(0.24), 0.45, H * 0.72, D / 2 + T + 0.12));
+  S.env.add(sc.group);
+  const b = new CANNON.Body({ mass: 8, material: MAT.suit, shape: new CANNON.Box(new CANNON.Vec3(W / 2 + T, HALF_Y, D / 2 + T)), linearDamping: 0.05, angularDamping: 0.35 });
+  b.linearFactor.set(1, 1, 0);
+  b.angularFactor.set(0, 0, 1);
+  b.position.set(x, y + HALF_Y + 0.3, 0);
+  S.outer.addBody(b);
+  const r = { cfg, b, g: sc.group, speed: 8.5 * rnd(0.86, 0.97), skill: Math.min(0.97, skill * rnd(0.92, 1.08)), stun: 0, safe: { x, y }, dec: new Map(), coyote: 0, stuckT: 0, finished: false, boostT: 0, springCd: 0, saidT: 0 };
+  b.userData = { rival: r };
+  S.rivals.push(r);
+}
+function rivalTick(r, dt) {
+  const b = r.b;
+  const g = S.g;
+  const gi = groundInfo(b);
+  if (gi.ok) r.coyote = 0.15; else r.coyote -= dt;
+  r.stun -= dt; r.boostT -= dt; r.springCd -= dt; r.saidT -= dt;
+  const go = S.phase === 'journey' && S.countdown <= 0 && r.stun <= 0;
+  if (go) {
+    let cap = r.boostT > 0 ? 13.5 : r.speed;
+    if (gi.belt < 0) cap += gi.belt * 0.6;
+    if (b.velocity.x < cap) b.force.x += (gi.ok ? 14 : 5) * b.mass;
+    if (gi.belt > 0 && b.velocity.x < gi.belt) b.force.x += 9 * b.mass;
+    if (gi.belt < 0) b.force.x += gi.belt * 1.5 * b.mass;
+    const x = b.position.x;
+    const jump = () => { b.velocity.y = 7.2 * Math.sqrt(g / 9.8); r.coyote = 0; };
+    for (const [a0] of S.track.gaps) {
+      if (r.coyote > 0 && x > a0 - 3.4 && x < a0 - 1.0) {
+        let d = r.dec.get(a0);
+        if (d === undefined) { d = Math.random() < r.skill; r.dec.set(a0, d); }
+        if (d) jump();
+      }
+    }
+    // упёрся во что-то — пробует перепрыгнуть
+    if (gi.ok && b.velocity.x < 1.2) r.stuckT += dt; else r.stuckT = 0;
+    if (r.stuckT > 0.7 && r.coyote > 0) { r.stuckT = 0; jump(); }
+  }
+  uprightTorque(b, gi.ok);
+  padsFor(b, r, gi.ok);
+  if (gi.ok && Math.abs(b.velocity.y) < 2) r.safe = { x: b.position.x, y: b.position.y - HALF_Y };
+  if (b.position.y < S.track.minY - 9) {
+    b.position.set(r.safe.x - 2, r.safe.y + HALF_Y + 1.5, 0);
+    b.velocity.set(0, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
+    r.stun = 0.8;
+    if (Math.abs(b.position.x - S.body.position.x) < 25 && S.saidT <= 0) { toast(r.cfg.name + ' нырнул!', 1.2); S.saidT = 2.5; }
+  }
+  const up = b.quaternion.vmult(new CANNON.Vec3(0, 1, 0));
+  if (up.y < 0.35 && b.velocity.length() < 2.5) { r.upT = (r.upT || 0) + dt; if (r.upT > 1.2) { r.upT = 0; b.quaternion.set(0, 0, 0, 1); b.position.y += 1.4; b.angularVelocity.set(0, 0, 0); } } else r.upT = 0;
+  if (!r.finished && b.position.x > S.track.finishX) { r.finished = true; S.finishOrder.push(r); }
+}
+function placeNow() {
+  const px = S.body.position.x;
+  let ahead = S.finishOrder.length;
+  for (const r of S.rivals) if (!r.finished && r.b.position.x > px) ahead++;
+  return ahead + 1;
+}
+function obstaclesTick(dt) {
+  const t = S.raceT;
+  for (const d of S.track.doors) {
+    const o = doorOpen(d, t);
+    const z = -o * 3.4;
+    d.b.velocity.set(0, 0, (z - d.b.position.z) / dt);
+    d.b.position.z = z;
+    d.open = o;
+  }
+  for (const p of S.track.pends) {
+    const a = 1.15 * Math.sin(t * p.w + p.ph);
+    const x = p.pivot.x + Math.sin(a) * p.L, y = p.pivot.y - Math.cos(a) * p.L;
+    p.b.velocity.set((x - p.b.position.x) / dt, (y - p.b.position.y) / dt, 0);
+    p.b.position.set(x, y, 0);
+  }
+  // падающий багаж в зоне «drop»
+  const px = S.body.position.x;
+  for (const z of S.track.drops) {
+    if (px < z.x0 - 4 || px > z.x1) continue;
+    z.t -= dt;
+    if (z.t <= 0 && S.falling.length < 4) {
+      z.t = rnd(0.9, 1.4);
+      const fx = Math.min(z.x1, Math.max(z.x0, px + S.body.velocity.x * 1.4 + rnd(-0.5, 1.2)));
+      spawnFalling(fx, z.y);
+    }
+  }
+  for (let i = S.falling.length - 1; i >= 0; i--) {
+    const f = S.falling[i];
+    f.life -= dt;
+    if (f.warn) f.warn.material.opacity = Math.max(0, Math.min(0.7, (f.b.position.y - f.y) / 8));
+    if (f.life <= 0) {
+      S.outer.removeBody(f.b); S.env.remove(f.m); if (f.warn) S.env.remove(f.warn);
+      S.falling.splice(i, 1);
+    }
+  }
+}
+function spawnFalling(x, y) {
+  const moon = S.L.theme === 'moon';
+  const m = moon ? makeRock(0.6, 0x8a90a0) : makeBoxCrate(0.9);
+  S.env.add(m);
+  const b = new CANNON.Body({ mass: 1.5, shape: new CANNON.Box(new CANNON.Vec3(0.45, 0.45, 0.45)) });
+  b.linearFactor.set(1, 1, 0);
+  b.angularFactor.set(0, 0, 1);
+  b.position.set(x, y + 12, 0);
+  b.angularVelocity.set(0, 0, rnd(-3, 3));
+  b.userData = { falling: true };
+  S.outer.addBody(b);
+  const warn = new THREE.Mesh(new THREE.CircleGeometry(0.75, 16), new THREE.MeshBasicMaterial({ color: 0xff3b3b, transparent: true, opacity: 0.5, depthWrite: false }));
+  warn.rotation.x = -Math.PI / 2;
+  warn.position.set(x, y + 0.04, 0);
+  S.env.add(warn);
+  S.falling.push({ b, m, warn, y, life: 5 });
+}
+function syncGroup(g, b) {
+  g.quaternion.set(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w);
+  const off = new THREE.Vector3(0, CENTER_Y, 0).applyQuaternion(g.quaternion);
+  g.position.set(b.position.x - off.x, b.position.y - off.y, b.position.z - off.z);
+}
+function raceVisuals(dt) {
+  for (const r of S.rivals) syncGroup(r.g, r.b);
+  for (const d of S.track.doors) {
+    d.m.position.set(d.x, d.y, d.b.position.z);
+    const red = d.open < 0.5;
+    d.lamp.material.color.setHex(red ? 0xff3b3b : 0x7bc96f);
+    d.lamp.material.emissive.setHex(red ? 0xff2200 : 0x2ec400);
+  }
+  for (const p of S.track.pends) {
+    p.sack.position.set(p.b.position.x, p.b.position.y - 0.2, 0);
+    p.sack.rotation.z = Math.atan2(p.b.position.x - p.pivot.x, p.pivot.y - p.b.position.y);
+    const mid = new THREE.Vector3().addVectors(p.pivot, p.b.position).multiplyScalar(0.5);
+    const len = p.pivot.distanceTo(new THREE.Vector3(p.b.position.x, p.b.position.y, 0));
+    p.rope.position.copy(mid);
+    p.rope.scale.set(1, len, 1);
+    p.rope.rotation.z = p.sack.rotation.z;
+  }
+  for (const f of S.falling) { f.m.position.copy(f.b.position); f.m.quaternion.copy(f.b.quaternion); }
+  for (const p of S.track.springs) { p.t = Math.max(0, (p.t || 0) - dt); p.m.scale.y = 1 - p.t * 1.6; }
+  const bp = S.body.position;
+  for (const s of S.track.stickers) {
+    if (s.got) continue;
+    s.m.rotation.y += dt * 3;
+    if (Math.abs(s.x - bp.x) < 1.9 && Math.abs(s.y - bp.y) < 1.7) {
+      s.got = true;
+      s.m.visible = false;
+      S.stats.stickers++;
+      sfx.star(S.stats.stickers % 3);
+      burst(s.m.position.clone(), 0xffd166, 6, 2, 0.06);
+      $('#stickN').textContent = S.stats.stickers;
+    }
+  }
+  // HUD: место и соперники на полоске
+  const pl = placeNow();
+  $('#placeN').textContent = pl;
+  $('#race').classList.toggle('first', pl === 1);
+  const span = S.track.finishX - S.track.startX;
+  S.rivals.forEach((r, k) => {
+    const pr = Math.max(0, Math.min(1, (r.b.position.x - S.track.startX) / span));
+    const el = $('#rv' + k);
+    if (el) el.style.left = pr * 100 + '%';
+  });
+}
+
 function startJourney() {
   const L = S.L;
   S.phase = 'journey';
@@ -1912,6 +2336,15 @@ function startJourney() {
   S.outer.defaultContactMaterial.friction = 0.4;
   S.outer.defaultContactMaterial.restitution = 0.05;
   S.outer.addContactMaterial(new CANNON.ContactMaterial(MAT.suit, MAT.ground, { friction: L.friction, restitution: 0.08 }));
+  S.outer.addContactMaterial(new CANNON.ContactMaterial(MAT.suit, MAT.slick, { friction: 0.0, restitution: 0.05 }));
+  S.outer.addContactMaterial(new CANNON.ContactMaterial(MAT.suit, MAT.suit, { friction: 0.2, restitution: 0.3 }));
+  S.rivals = [];
+  S.falling = [];
+  S.finishOrder = [];
+  S.raceT = 0;
+  S.saidT = 0;
+  S.boostT = 0;
+  S.springCd = 0;
   S.track = buildTrack(L);
   S.env.add(S.suit);
   S.suit.scale.set(1, 1, 1);
@@ -1930,6 +2363,27 @@ function startJourney() {
   b.addEventListener('collide', (e) => {
     const v = Math.abs(e.contact.getImpactVelocityAlongNormal());
     if (v > 3) { sfx.thud(); haptic(v > 7 ? 'heavy' : 'medium'); S.shake = Math.max(S.shake, Math.min(0.35, v * 0.035)); }
+    const o = e.body.userData || {};
+    if (o.pendulum && S.hitT <= 0) {
+      S.hitT = 1;
+      S.post.push(() => { b.velocity.x = Math.min(b.velocity.x, 0) - 6; b.velocity.y = 4; });
+      toast(pick(['Бах! Мешком!', 'Мешок картошки атакует!', 'Ой-ой!']), 1.1);
+      haptic('heavy');
+    }
+    if (o.falling && S.hitT <= 0 && v > 2) {
+      S.hitT = 0.8;
+      S.post.push(() => { b.velocity.x *= 0.4; });
+      toast(pick(['Сверху прилетело!', 'Чей-то багаж!', 'По крышке!']), 1);
+    }
+    if (o.rival && b.position.y > e.body.position.y + 1.3 && S.hitT <= 0) {
+      S.hitT = 0.6;
+      const r = o.rival;
+      r.stun = 1.3;
+      S.stats.stomps++;
+      S.post.push(() => { b.velocity.y = 6.5 * Math.sqrt(S.g / 9.8); e.body.velocity.x *= 0.2; });
+      toast('Прыг по ' + (r.cfg.name.startsWith('Баул') ? 'баулу!' : r.cfg.name.startsWith('Сумка') ? 'сумке!' : 'чемодану!'), 1);
+      sfx.squeak();
+    }
   });
   S.outer.addBody(b);
   S.body = b;
@@ -1945,6 +2399,15 @@ function startJourney() {
   S.eggAt = rnd(6, 16);
   S.eggLaid = false;
   S.cam = null;
+  S.hitT = 0;
+  S.countdown = 3.4;
+  S.cdShown = 4;
+  // соперники: двое впереди, один сзади
+  const sk = L.rivalSkill || 0.85;
+  addRival(RIVALS[0], S.track.startX + 4.2, 0, sk);
+  addRival(RIVALS[1], S.track.startX + 8.4, 0, sk);
+  addRival(RIVALS[2], S.track.startX - 4.2, 0, sk);
+  $('#stickN').textContent = '0';
   updateFenBtn();
   if (!S.xrayCam) {
     S.xrayCam = new THREE.OrthographicCamera(-1.85, 1.85, 1.3, -1.3, 0.1, 20);
@@ -1961,7 +2424,6 @@ function startJourney() {
   S.xrayCam.lookAt(S.suit.localToWorld(new THREE.Vector3(0, H / 2, 0)));
   showLayers('top', 'journey');
   setViewOffset(-10);
-  later(0.4, () => toast(pick(['Вези аккуратно!', 'Поехали!', 'Только не урони!'])));
   syncSuit();
 }
 
@@ -1994,29 +2456,41 @@ function isGrounded() {
 function journeyTick(dt) {
   const b = S.body;
   const g = S.g;
-  const active = S.phase === 'journey';
+  S.raceT += dt;
+  S.hitT -= dt; S.boostT -= dt; S.springCd -= dt; S.saidT -= dt;
+  if (S.countdown > 0) {
+    S.countdown -= dt;
+    const n = Math.ceil(S.countdown);
+    if (n !== S.cdShown) {
+      S.cdShown = n;
+      if (n > 0) { toast(String(n), 0.8); sfx.tick(); } else { toast('Марш!', 0.9); sfx.star(2); haptic('medium'); }
+    }
+  }
+  const active = S.phase === 'journey' && S.countdown <= 0;
   if (active) S.journeyT += dt;
-  const grounded = isGrounded();
+  const gi = groundInfo(b);
+  S.groundBody = gi.gb;
+  const grounded = gi.ok;
   if (grounded) S.coyote = 0.15; else S.coyote -= dt;
   const dir = active ? (S.in.right ? 1 : 0) - (S.in.left ? 1 : 0) : 0;
+  let cap = S.boostT > 0 ? 13.5 : 8.5;
+  if (gi.belt < 0) cap += gi.belt * 0.6;
   if (dir) {
     const f = (grounded ? 16 : 7) * b.mass;
-    if ((dir > 0 && b.velocity.x < 8.5) || (dir < 0 && b.velocity.x > -6)) b.force.x += dir * f;
+    if ((dir > 0 && b.velocity.x < cap) || (dir < 0 && b.velocity.x > -6)) b.force.x += dir * f;
   } else if (grounded && S.L.friction < 0.1) {
     b.force.x -= b.velocity.x * 0.15 * b.mass;
   }
-  const gb = S.groundBody;
-  if (grounded && gb && gb.userData && gb.userData.belt && b.velocity.x < gb.userData.belt) b.force.x += 9 * b.mass;
+  if (gi.belt > 0 && b.velocity.x < gi.belt) b.force.x += 9 * b.mass;
+  if (gi.belt < 0) b.force.x += gi.belt * 1.5 * b.mass;
+  padsFor(b, S, grounded);
   // тяжёлые вещи кренят чемодан
   const com = bagCOM();
   const r = b.quaternion.vmult(new CANNON.Vec3(com.x, com.y - CENTER_Y, com.z));
   b.torque.z += -r.x * S.massItems * g * 0.8;
-  // «неваляшка»: чемодан хочет стоять на колёсах, но шатается
-  const ang = 2 * Math.atan2(b.quaternion.z, b.quaternion.w);
-  const a = Math.atan2(Math.sin(ang), Math.cos(ang));
-  // мёртвая зона ±0.5 рад, чтобы чемодан мог заезжать на горки
-  const e = a > 0.5 ? a - 0.5 : a < -0.5 ? a + 0.5 : 0;
-  if (Math.abs(a) < 1.4) b.torque.z += (-e * (grounded ? 90 : 30) - b.angularVelocity.z * (grounded ? 4 : 1.5)) * (b.mass / 10);
+  uprightTorque(b, grounded);
+  for (const r of S.rivals) rivalTick(r, dt);
+  obstaclesTick(dt);
   if (S.inflated) b.force.y += 0.62 * b.mass * g;
   if (S.wantJump) {
     S.wantJump = false;
@@ -2069,9 +2543,6 @@ function journeyTick(dt) {
     S.prevV.copy(b.velocity);
     toast('Оп! Поставили на колёса.', 1.2);
     sfx.pop();
-  }
-  for (const d of dyn) {
-    if (d.pigeon && !d.pigeon.hit) { d.b.position.x += 0; }
   }
   if (active && b.position.x > S.track.finishX) arrive();
 }
@@ -2171,9 +2642,10 @@ function respawn() {
 function arrive() {
   S.phase = 'arrive';
   S.in.left = S.in.right = false;
+  S.place = 1 + S.finishOrder.length;
   sfx.win();
   hapticNote('success');
-  toast('Приехали!', 1.4);
+  toast(S.place === 1 ? 'Первое место!!!' : S.place + '-е место. Приехали!', 1.6);
   later(1.4, startFinale);
 }
 
@@ -2371,12 +2843,15 @@ function computeResults() {
   const pk = S.packAtClose || { over: 1, fragBad: 1, bal: 1 };
   const lidOk = pk.over === 0;
   const packN = (pk.got === pk.total ? 1 : 0) + (lidOk ? 1 : 0) + (pk.fragBad === 0 ? 1 : 0) + (Math.abs(pk.bal) < 0.3 ? 1 : 0);
-  const stars = 1 + (all ? 1 : 0) + (all && clean && lidOk ? 1 : 0);
+  const place = S.place || 4;
+  const stars = 1 + (all ? 1 : 0) + (place === 1 ? 1 : 0);
   const jar = bag().some((i) => i.id === 'jar' && !i.broken);
   const st = S.stats;
   const absurd = 100 * (st.eggs + st.pigeons + st.ejected + st.broken + st.falls + st.squashed) + (st.inflated ? 300 : 0) + st.jumps * 20;
   const ev = [];
   ev.push(packN === 4 ? 'Идеальная упаковка' : 'Упаковка ' + packN + '/4');
+  if (st.stomps) ev.push('Прыжков по соперникам: ' + st.stomps);
+  if (st.home) ev.push('Оставлено дома: ' + st.home);
   if (st.eggs) ev.push('Яйцо в дороге');
   if (st.pigeons) ev.push('Голубей: ' + st.pigeons);
   if (st.falls) ev.push('Нырков: ' + st.falls);
@@ -2388,15 +2863,15 @@ function computeResults() {
   let line = all ? L.win : jar ? L.jarLine : L.fail;
   if (!all && !clean && !jar && st.broken > 1) line = L.fail;
   let next = '';
-  if (stars === 1) next = 'Вторая ★ — довези всё, что просил клиент';
-  else if (stars === 2) next = 'Третья ★ — ничего не разбить и закрыть крышку без прыжков';
-  return { stars, got, total, all, broken: st.broken, absurd: absurd + (packN === 4 ? 500 : 0), ev, line, fast, next };
+  if (!all) next = 'Звезда — за весь заказ, довезённый целым';
+  if (place !== 1) next = (next ? next + '. ' : '') + 'Звезда — за первое место в гонке';
+  return { stars, got, total, all, broken: st.broken, absurd: absurd + (packN === 4 ? 500 : 0), ev, line, fast, next, place, stickers: st.stickers };
 }
 
 function showResults(r) {
   $('#stats').innerHTML = `<div style="background:#EAF8EC"><b>${r.got} / ${r.total}</b><small>довезли</small></div>`
-    + `<div style="background:#FFF0F5"><b>${r.broken}</b><small>разбилось</small></div>`
-    + `<div style="background:#FFF6D9"><b>+${r.absurd}</b><small>за абсурд</small></div>`;
+    + `<div style="background:${r.place === 1 ? '#FFF6D9' : '#FFF0F5'}"><b>${r.place}-е</b><small>место</small></div>`
+    + `<div style="background:#EEF5FB"><b>${r.stickers}</b><small>наклеек</small></div>`;
   $('#events').innerHTML = r.ev.slice(0, 4).map((e) => `<span>${e}</span>`).join('');
   $('#line').textContent = '«' + r.line + '»';
   $('#starHint').textContent = r.next;
@@ -2465,7 +2940,7 @@ function updateCamera(dt) {
   } else if (p === 'journey' || p === 'arrive') {
     fov = 50;
     const b = S.body;
-    const d = Math.max(11, fitDist(5.2, fov));
+    const d = Math.max(12, fitDist(6.2, fov));
     look = new THREE.Vector3(b.position.x + 2.4, b.position.y + 0.9, 0);
     pos = new THREE.Vector3(b.position.x + 2.4, b.position.y + 3.0, d);
   } else if (p === 'finale') {
@@ -2553,7 +3028,8 @@ function frame(dt) {
   if (S.phase === 'journey' || S.phase === 'arrive') {
     syncSuit();
     for (const d of dyn) { d.m.position.copy(d.b.position); d.m.quaternion.copy(d.b.quaternion); if (d.pigeon && !d.pigeon.hit) d.m.position.y += Math.abs(Math.sin(S.time * 3 + d.pigeon.t)) * 0.05 - 0.45; else if (d.pigeon) d.m.position.y -= 0.45; }
-    for (const bl of S.belts) { const span = 1.2; const o = (S.time * bl.speed * 0.6) % span; let x = bl.base + o; if (x > bl.x1 - 0.2) x -= Math.floor((bl.x1 - bl.x0) / span) * span; bl.m.position.x = x; }
+    for (const bl of S.belts) { const span = 1.2; const o = (((S.time * bl.speed * 0.6) % span) + span) % span; let x = bl.base + o; if (x > bl.x1 - 0.2) x -= Math.floor((bl.x1 - bl.x0) / span) * span; bl.m.position.x = x; }
+    raceVisuals(dt);
     for (const gl of S.track.gloves) {
       if (gl.t < 0) continue;
       gl.t += dt;
