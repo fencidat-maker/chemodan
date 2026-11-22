@@ -762,7 +762,7 @@ const LEVELS = [
     items: ['jar', 'chicken', 'cake', 'teapot', 'watermelon', 'pillow', 'cat', 'duck', 'fen', 'gnome'],
     required: ['jar', 'chicken', 'cake', 'teapot'],
     theme: 'village',
-    gravity: 9.8, packGravity: 9.8, friction: 0.35, par: 50,
+    gravity: 9.8, packGravity: 9.8, friction: 0.35, par: 40,
     track: [['flat', 10], ['bump'], ['flat', 6], ['gap', 2.4], ['flat', 7], ['pigeon'], ['flat', 5], ['up', 1.0], ['flat', 6],
       ['bump'], ['flat', 3], ['bump'], ['flat', 5], ['down', 1.0], ['flat', 4], ['gap', 3], ['flat', 6], ['boxes'], ['flat', 6], ['pigeon'], ['flat', 6], ['finish']],
     win: 'Всё довезла! Внучки, бегите сюда!',
@@ -777,7 +777,7 @@ const LEVELS = [
     items: ['swimsuit', 'swimsuit', 'swimsuit', 'flamingo', 'watermelon', 'cake', 'jar', 'fen', 'pillow', 'duck'],
     required: ['swimsuit', 'swimsuit', 'swimsuit', 'flamingo', 'watermelon'],
     theme: 'airport',
-    gravity: 9.8, packGravity: 9.8, friction: 0.3, par: 55,
+    gravity: 9.8, packGravity: 9.8, friction: 0.3, par: 35,
     track: [['flat', 8], ['belt', 12], ['glove'], ['flat', 5], ['gap', 2.6], ['belt', 10], ['pigeon'], ['flat', 4], ['inflate'], ['flat', 4],
       ['gap', 4], ['flat', 5], ['up', 1.2], ['belt', 10], ['boxes'], ['flat', 4], ['gap', 4.5], ['flat', 5], ['glove'], ['flat', 8], ['finish']],
     win: 'Тридцать купальников! Ну то есть три. Сойдёт!',
@@ -792,7 +792,7 @@ const LEVELS = [
     items: ['fish', 'rod', 'thermos', 'ice', 'cat', 'pillow', 'jar', 'duck', 'fen'],
     required: ['fish', 'rod', 'thermos'],
     theme: 'ice',
-    gravity: 9.8, packGravity: 9.8, friction: 0.03, par: 55,
+    gravity: 9.8, packGravity: 9.8, friction: 0.03, par: 40,
     track: [['flat', 10], ['down', 1.5], ['flat', 8], ['gap', 2.2], ['flat', 6], ['bump'], ['flat', 6], ['gap', 2.6], ['flat', 5], ['up', 1.2],
       ['flat', 4], ['pigeon'], ['flat', 5], ['down', 1.2], ['flat', 6], ['gap', 3], ['flat', 5], ['boxes'], ['flat', 8], ['finish']],
     win: 'И рыба на месте, и удочка! Зачем рыба на рыбалку — не спрашивайте.',
@@ -807,7 +807,7 @@ const LEVELS = [
     items: ['borscht', 'guitar', 'chicken', 'jar', 'cat', 'fen', 'pillow', 'gnome'],
     required: ['borscht', 'guitar', 'chicken'],
     theme: 'moon',
-    gravity: 3.2, packGravity: 2.2, friction: 0.35, par: 60,
+    gravity: 3.2, packGravity: 2.2, friction: 0.35, par: 45,
     track: [['flat', 10], ['gap', 4], ['flat', 6], ['bump'], ['flat', 5], ['gap', 5], ['flat', 5], ['up', 2.0], ['flat', 6], ['gap', 6],
       ['flat', 6], ['pigeon'], ['flat', 4], ['down', 2.0], ['flat', 5], ['gap', 5], ['flat', 6], ['boxes'], ['flat', 8], ['finish']],
     win: 'Борщ на Луне! Поехали!',
@@ -832,7 +832,7 @@ const HALF_Y = (TOP - BOT) / 2;
 const CENTER_Y = (TOP + BOT) / 2;
 const LID_OPEN = -1.9;
 const HOLD_Y = H + 1.3;
-const SHARE_URL = '';
+const SHARE_URL = 'https://t.me/chemodan_bez_ruchki_bot';
 const $ = (s) => document.querySelector(s);
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -1675,8 +1675,8 @@ function buildTrack(L) {
     if (type === 'flat') { groundBox(x, x + a, y, th.top, th.side); x += a; }
     else if (type === 'gap') { tr.gaps.push([x, x + a]); x += a; }
     else if (type === 'bump') { groundBox(x, x + 4, y, th.top, th.side); rampBox(x + 0.5, y, x + 2, y + 0.55, th.top); rampBox(x + 2, y + 0.55, x + 3.5, y, th.top); x += 4; }
-    else if (type === 'up') { groundBox(x, x + 3, y, th.top, th.side); rampBox(x, y, x + 3, y + a, th.top); y += a; x += 3; }
-    else if (type === 'down') { groundBox(x, x + 3, y - a, th.top, th.side); rampBox(x, y, x + 3, y - a, th.top); y -= a; x += 3; }
+    else if (type === 'up') { const l = Math.max(3, a * 2.6); groundBox(x, x + l, y, th.top, th.side); rampBox(x, y, x + l, y + a, th.top); y += a; x += l; }
+    else if (type === 'down') { const l = Math.max(3, a * 2.6); groundBox(x, x + l, y - a, th.top, th.side); rampBox(x, y, x + l, y - a, th.top); y -= a; x += l; }
     else if (type === 'belt') { groundBox(x, x + a, y, 0x3a3150, 0x2b2140, 5); x += a; }
     else if (type === 'pigeon') { groundBox(x, x + 3, y, th.top, th.side); addPigeon(x + 1.5, y); x += 3; }
     else if (type === 'boxes') { groundBox(x, x + 5, y, th.top, th.side); addCrates(x + 2, y); x += 5; }
@@ -1813,7 +1813,9 @@ function journeyTick(dt) {
   // «неваляшка»: чемодан хочет стоять на колёсах, но шатается
   const ang = 2 * Math.atan2(b.quaternion.z, b.quaternion.w);
   const a = Math.atan2(Math.sin(ang), Math.cos(ang));
-  if (Math.abs(a) < 1.3) b.torque.z += (-a * (grounded ? 70 : 25) - b.angularVelocity.z * (grounded ? 10 : 3)) * (b.mass / 10);
+  // мёртвая зона ±0.5 рад, чтобы чемодан мог заезжать на горки
+  const e = a > 0.5 ? a - 0.5 : a < -0.5 ? a + 0.5 : 0;
+  if (Math.abs(a) < 1.4) b.torque.z += (-e * (grounded ? 90 : 30) - b.angularVelocity.z * (grounded ? 4 : 1.5)) * (b.mass / 10);
   if (S.inflated) b.force.y += 0.62 * b.mass * g;
   if (S.wantJump) {
     S.wantJump = false;
@@ -2058,7 +2060,7 @@ function startFinale() {
   if (L.grandmaCameo) {
     granny = makePerson(LEVELS[0].client);
     granny.scale.setScalar(1.1);
-    granny.position.set(-3.6, 0, -0.6);
+    granny.position.set(-2.9, 0, 0.3);
     granny.rotation.y = 0.5;
     S.env.add(granny);
   }
@@ -2143,7 +2145,9 @@ function launchItems(F) {
       });
     } else {
       later(delay, () => {
-        const v = new THREE.Vector3(rnd(-5, 4), rnd(6, 9), rnd(1.5, 4));
+        m.visible = true;
+        m.scale.set(inst.sx, inst.sy, inst.sz);
+        const v = new THREE.Vector3(rnd(-3.2, 2.2), rnd(5, 7.5), rnd(0.8, 2.4));
         flyBallistic(m, v, new THREE.Vector3(rnd(-6, 6), rnd(-6, 6), rnd(-6, 6)), hy, () => { if (inst.def.squeak) sfx.squeak(); else sfx.drop(); });
         if (inst.def.alive === 'hop') sfx.cluck();
       });
