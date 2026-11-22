@@ -2213,6 +2213,7 @@ function rivalTick(r, dt) {
     b.position.set(Math.max(2, r.safe.x - 2), r.safe.y + HALF_Y + 1.5, 0);
     b.velocity.set(0, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
     r.stun = 0.8;
+    r.dec.clear();
     if (Math.abs(b.position.x - S.body.position.x) < 25 && S.saidT <= 0) { toast(r.cfg.name + ' нырнул!', 1.2); S.saidT = 2.5; }
   }
   const up = b.quaternion.vmult(new CANNON.Vec3(0, 1, 0));
