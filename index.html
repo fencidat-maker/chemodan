@@ -875,8 +875,8 @@ const LEVELS = [
     theme: 'village',
     gravity: 9.8, packGravity: 9.8, friction: 0.35,
     rivalSkill: 0.8,
-    track: [['flat', 9], ['sticker'], ['bump'], ['flat', 4], ['door'], ['flat', 5], ['gap', 2.4], ['flat', 4], ['boost'], ['flat', 5],
-      ['pendulum'], ['flat', 4], ['pigeon'], ['flat', 3], ['spring'], ['flat', 2], ['gap', 3], ['flat', 5], ['drop', 12], ['flat', 3],
+    track: [['flat', 9], ['sticker'], ['bump'], ['flat', 4], ['door'], ['flat', 5], ['gap', 3.8], ['flat', 4], ['boost'], ['flat', 5],
+      ['pendulum'], ['flat', 4], ['pigeon'], ['flat', 3], ['spring'], ['flat', 2], ['gap', 4.4], ['flat', 5], ['drop', 12], ['flat', 3],
       ['up', 1.0], ['flat', 4], ['slick', 6], ['door'], ['flat', 4], ['boxes'], ['flat', 4], ['boost'], ['flat', 6], ['finish']],
     win: 'Всё довезла! Внучки, бегите сюда!',
     jarLine: 'Огурчики целы — значит, всё хорошо!',
@@ -894,9 +894,9 @@ const LEVELS = [
     theme: 'airport',
     gravity: 9.8, packGravity: 9.8, friction: 0.3,
     rivalSkill: 0.85,
-    track: [['flat', 8], ['belt', 8], ['door'], ['belt', 6], ['glove'], ['flat', 4], ['gap', 2.6], ['reverse', 7], ['flat', 3], ['sticker'],
-      ['drop', 12], ['pigeon'], ['flat', 3], ['inflate'], ['boost'], ['flat', 3], ['gap', 4], ['flat', 4], ['door'], ['belt', 8],
-      ['pendulum'], ['flat', 4], ['reverse', 6], ['flat', 3], ['spring'], ['flat', 2], ['gap', 4.5], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
+    track: [['flat', 8], ['belt', 8], ['door'], ['belt', 6], ['glove'], ['flat', 4], ['gap', 4], ['reverse', 7], ['flat', 3], ['sticker'],
+      ['drop', 12], ['pigeon'], ['flat', 3], ['inflate'], ['boost'], ['flat', 3], ['gap', 5.4], ['flat', 4], ['door'], ['belt', 8],
+      ['pendulum'], ['flat', 4], ['reverse', 6], ['flat', 3], ['spring'], ['flat', 2], ['gap', 5.9], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
     win: 'Тридцать купальников! Ну то есть три. Сойдёт!',
     jarLine: 'Огурцы на пляже — это классика!',
     fail: 'А я всё равно загорю!',
@@ -913,9 +913,9 @@ const LEVELS = [
     theme: 'ice',
     gravity: 9.8, packGravity: 9.8, friction: 0.03,
     rivalSkill: 0.88,
-    track: [['flat', 9], ['down', 1.5], ['flat', 5], ['door'], ['flat', 4], ['gap', 2.2], ['flat', 4], ['boost'], ['flat', 3], ['pendulum'],
-      ['flat', 4], ['gap', 2.6], ['flat', 4], ['spring'], ['flat', 2], ['gap', 3.2], ['flat', 4], ['up', 1.2], ['flat', 3], ['drop', 12],
-      ['flat', 3], ['door'], ['flat', 3], ['pigeon'], ['flat', 4], ['down', 1.2], ['flat', 4], ['gap', 3], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
+    track: [['flat', 9], ['down', 1.5], ['flat', 5], ['door'], ['flat', 4], ['gap', 3.8], ['flat', 4], ['boost'], ['flat', 3], ['pendulum'],
+      ['flat', 4], ['gap', 4], ['flat', 4], ['spring'], ['flat', 2], ['gap', 4.6], ['flat', 4], ['up', 1.2], ['flat', 3], ['drop', 12],
+      ['flat', 3], ['door'], ['flat', 3], ['pigeon'], ['flat', 4], ['down', 1.2], ['flat', 4], ['gap', 4.4], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
     win: 'И рыба на месте, и удочка! Зачем рыба на рыбалку — не спрашивайте.',
     jarLine: 'Огурчик к чаю — самое то.',
     fail: 'Ничего. Порыбачу без всего.',
@@ -932,9 +932,9 @@ const LEVELS = [
     theme: 'moon',
     gravity: 3.2, packGravity: 2.2, friction: 0.35,
     rivalSkill: 0.9,
-    track: [['flat', 10], ['gap', 4], ['flat', 5], ['door'], ['flat', 4], ['drop', 14], ['gap', 5], ['flat', 4], ['spring'], ['flat', 2],
-      ['gap', 6], ['flat', 4], ['pendulum'], ['flat', 4], ['up', 2.0], ['flat', 4], ['boost'], ['gap', 6], ['flat', 4], ['slick', 6],
-      ['door'], ['flat', 3], ['pigeon'], ['flat', 3], ['down', 2.0], ['flat', 4], ['gap', 5], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
+    track: [['flat', 10], ['gap', 6.5], ['flat', 5], ['door'], ['flat', 4], ['drop', 14], ['gap', 7.5], ['flat', 4], ['spring'], ['flat', 2],
+      ['gap', 8.5], ['flat', 4], ['pendulum'], ['flat', 4], ['up', 2.0], ['flat', 4], ['boost'], ['gap', 8.5], ['flat', 4], ['slick', 6],
+      ['door'], ['flat', 3], ['pigeon'], ['flat', 3], ['down', 2.0], ['flat', 4], ['gap', 7.5], ['flat', 4], ['boxes'], ['flat', 6], ['finish']],
     win: 'Борщ на Луне! Поехали!',
     jarLine: 'Огурцы в космосе! Бабушка будет довольна.',
     fail: 'Хьюстон, у нас проблемы.',
@@ -2018,7 +2018,7 @@ function decorate(theme, x0, x1, y) {
 function buildTrack(L) {
   const th = THEMES[L.theme];
   let x = 0, y = 0, minY = 0;
-  const tr = { startX: 4, finishX: 0, gloves: [], triggers: [], gaps: [], doors: [], pends: [], drops: [], boosts: [], springs: [], stickers: [] };
+  const tr = { startX: 6, finishX: 0, gloves: [], triggers: [], gaps: [], doors: [], pends: [], drops: [], boosts: [], springs: [], stickers: [] };
   S.track = tr;
   S.belts = [];
   const doorColor = { village: 0xb8783f, airport: 0x2ec4b6, ice: 0x5aa9e6, moon: 0x9aa5b8 }[L.theme];
@@ -2143,17 +2143,16 @@ function doorOpen(d, t) {
   return (p - 0.92) / 0.08;
 }
 function addPendulum(x, y, color) {
-  const pivot = new THREE.Vector3(x, y + 7.6, 0);
+  const pivot = new THREE.Vector3(x, y + 7.0, 0);
   S.env.add(at(mesh(box(0.3, 7.8, 0.3), 0x8a5a2b), x, y + 3.9, -2.6));
   S.env.add(at(mesh(box(0.4, 0.4, 5.6), 0x8a5a2b), x, y + 7.8, 0));
   const sack = makeSack(color);
   S.env.add(sack);
   const rope = mesh(cyl(0.05, 0.05, 1, 4), 0x6b4a2b);
   S.env.add(rope);
-  const b = new CANNON.Body({ mass: 0, type: CANNON.Body.KINEMATIC, shape: new CANNON.Sphere(0.85) });
-  b.userData = { pendulum: true };
-  S.outer.addBody(b);
-  S.track.pends.push({ pivot, L: 5.0, b, sack, rope, w: rnd(1.7, 2.1), ph: rnd(0, 6) });
+  // мешок — не физическое тело, а «ловушка»: задел — отбросило
+  const b = { position: new CANNON.Vec3(x, y + 2, 0) };
+  S.track.pends.push({ pivot, L: 5.0, b, sack, rope, w: rnd(1.7, 2.1), ph: rnd(0, 6), vx: 0 });
 }
 function addSticker(x, y) {
   const m = makeSticker(pick([0xffd166, 0xff7eb6, 0x8edceb, 0x7bc96f]));
@@ -2181,7 +2180,7 @@ function rivalTick(r, dt) {
   const g = S.g;
   const gi = groundInfo(b);
   if (gi.ok) r.coyote = 0.15; else r.coyote -= dt;
-  r.stun -= dt; r.boostT -= dt; r.springCd -= dt; r.saidT -= dt;
+  r.stun -= dt; r.boostT -= dt; r.springCd -= dt; r.saidT -= dt; r.hitT = (r.hitT || 0) - dt;
   const go = S.phase === 'journey' && S.countdown <= 0 && r.stun <= 0;
   if (go) {
     let cap = r.boostT > 0 ? 13.5 : r.speed;
@@ -2208,7 +2207,7 @@ function rivalTick(r, dt) {
   if (b.position.x < -15 || b.position.y > 60) b.position.y = S.track.minY - 20;
   if (gi.ok && Math.abs(b.velocity.y) < 2) r.safe = { x: b.position.x, y: b.position.y - HALF_Y };
   if (b.position.y < S.track.minY - 9) {
-    b.position.set(r.safe.x - 2, r.safe.y + HALF_Y + 1.5, 0);
+    b.position.set(Math.max(2, r.safe.x - 2), r.safe.y + HALF_Y + 1.5, 0);
     b.velocity.set(0, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
     r.stun = 0.8;
     if (Math.abs(b.position.x - S.body.position.x) < 25 && S.saidT <= 0) { toast(r.cfg.name + ' нырнул!', 1.2); S.saidT = 2.5; }
@@ -2240,8 +2239,19 @@ function obstaclesTick(dt) {
   for (const p of S.track.pends) {
     const a = 1.15 * Math.sin(t * p.w + p.ph);
     const x = p.pivot.x + Math.sin(a) * p.L, y = p.pivot.y - Math.cos(a) * p.L;
-    p.b.velocity.set((x - p.b.position.x) / dt, (y - p.b.position.y) / dt, 0);
+    p.vx = (x - p.b.position.x) / dt;
     p.b.position.set(x, y, 0);
+    const hit = (bb) => Math.abs(bb.position.x - x) < W / 2 + T + 0.8 && Math.abs(bb.position.y - y) < HALF_Y + 0.8;
+    if (S.hitT <= 0 && hit(S.body)) {
+      S.hitT = 1;
+      const dir = Math.sign(p.vx) || -1;
+      S.body.velocity.x = dir * 7; S.body.velocity.y = 5;
+      toast(pick(['Бах! Мешком!', 'Мешок картошки атакует!', 'Ой-ой!']), 1.1);
+      sfx.thud(); haptic('heavy'); S.shake = 0.3;
+    }
+    for (const r of S.rivals) {
+      if ((r.hitT || 0) <= 0 && hit(r.b)) { r.hitT = 1; r.b.velocity.x = (Math.sign(p.vx) || -1) * 7; r.b.velocity.y = 5; r.stun = 0.5; }
+    }
   }
   // падающий багаж в зоне «drop»
   const px = S.body.position.x;
@@ -2414,7 +2424,7 @@ function startJourney() {
   const sk = L.rivalSkill || 0.85;
   addRival(RIVALS[0], S.track.startX + 4.2, 0, sk);
   addRival(RIVALS[1], S.track.startX + 8.4, 0, sk);
-  addRival(RIVALS[2], S.track.startX - 4.2, 0, sk);
+  addRival(RIVALS[2], S.track.startX - 3.8, 0, sk);
   $('#stickN').textContent = '0';
   updateFenBtn();
   if (!S.xrayCam) {
