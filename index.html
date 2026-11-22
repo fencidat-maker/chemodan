@@ -54,7 +54,8 @@ button{font-family:inherit;color:var(--ink);border:0;cursor:pointer;touch-action
 .lvl .st i{font-style:normal;color:#FFB627}
 
 /* верхняя панель уровня */
-#top{position:absolute;top:calc(var(--st) + 10px);left:10px;right:10px;display:flex;gap:8px;align-items:center;pointer-events:none}
+#top{top:calc(var(--st) + 10px);left:10px;right:10px;bottom:auto;gap:8px;align-items:center;pointer-events:none}
+#top.on{display:flex}
 #homeBtn{width:48px;height:48px;border-radius:15px;flex:none;pointer-events:auto;display:flex;align-items:center;justify-content:center}
 #levelTitle{font-weight:900;font-size:16px;background:rgba(255,255,255,.85);padding:6px 12px;border-radius:12px}
 
@@ -66,10 +67,11 @@ button{font-family:inherit;color:var(--ink);border:0;cursor:pointer;touch-action
 #order .need img{width:46px;height:46px}
 #order .need div.ok{background:#EAF8EC}
 #order .need div.ok::after{content:'✓';position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;background:var(--gr);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}
-#hint{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 196px);text-align:center;font-weight:700;font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(43,33,64,.5);pointer-events:none}
-#tray{position:absolute;left:10px;right:10px;bottom:calc(var(--sb) + 100px);background:#fff;border-radius:24px;padding:10px;display:flex;gap:8px;overflow-x:auto;touch-action:pan-x;min-height:88px;box-shadow:0 4px 0 rgba(43,33,64,.15)}
-#tray .it{position:relative;flex:none;width:68px;height:68px;border-radius:18px;background:#F4F1EC;touch-action:none}
-#tray .it img{width:68px;height:68px;pointer-events:none}
+#hint{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 272px);text-align:center;font-weight:700;font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(43,33,64,.5);pointer-events:none}
+#tray{position:absolute;left:10px;right:10px;bottom:calc(var(--sb) + 100px);background:#fff;border-radius:24px;padding:8px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;min-height:76px;box-shadow:0 4px 0 rgba(43,33,64,.15)}
+#tray .it{position:relative;aspect-ratio:1;border-radius:16px;background:#F4F1EC;touch-action:none}
+#tray .it img{width:100%;height:100%;pointer-events:none}
+#tray .empty{grid-column:1/-1}
 #tray .it.req::before{content:'';position:absolute;top:5px;left:5px;width:12px;height:12px;border-radius:50%;background:var(--or);box-shadow:0 0 0 2px #fff}
 #tray .it.power{box-shadow:inset 0 0 0 3px var(--ink)}
 #tray .empty{align-self:center;font-weight:700;font-size:15px;padding:0 8px;opacity:.6}
@@ -1449,6 +1451,7 @@ function lidTick(dt) {
     L.y += L.vy * dt;
     if (L.vy < 0 && L.y <= lidLandY() && !L.exit) { L.y = lidLandY(); L.air = false; onLidLand(); }
   }
+  if (L.exit) return;
   L.person.position.y = L.y;
   const ud = L.person.userData;
   const up = L.air ? 2.6 : 0.4;
@@ -1468,8 +1471,11 @@ function onLidLand() {
   burst(new THREE.Vector3(rnd(-1, 1), H + 0.6, 1.2), 0xffffff, 6, 2, 0.06);
   if (L.over.length) {
     const inst = L.over.splice(Math.floor(Math.random() * L.over.length), 1)[0];
-    if (inst.def.soft) squashItem(inst); else if (L.taps >= L.need - 1 || Math.random() < 0.55) ejectItem(inst); else L.over.push(inst);
+    if (inst.def.soft) squashItem(inst);
+    else if (topOf(inst) > H + 0.55 && Math.random() < 0.45) ejectItem(inst);
+    else { pressDown(inst); if (topOf(inst) > H + 0.03) L.over.push(inst); }
   }
+  for (const i of bag()) if (i.body) i.body.velocity.y -= 2.5;
   if (L.taps >= L.need) finishLid();
 }
 $('#jumpBtn').addEventListener('pointerdown', (e) => {
@@ -1502,6 +1508,18 @@ function squashItem(inst) {
   const lines = { cat: 'Кот сплющился. Ему нормально.', flamingo: 'Фламинго сдулся... пока что.', pillow: 'Подушку утрамбовали!', duck: 'Пи-и-и!', swimsuit: 'Купальник в лепёшку!' };
   toast(lines[inst.id] || 'Утрамбовали!', 1.3);
 }
+function pressDown(inst) {
+  // утрамбовать: опустить вещь пониже и чуть сдвинуть
+  const b = inst.body;
+  if (!b) return;
+  const over = topOf(inst) - (H - 0.02);
+  if (over <= 0) return;
+  b.position.y -= over;
+  b.position.x += rnd(-0.15, 0.15);
+  b.position.z += rnd(-0.1, 0.1);
+  b.velocity.set(0, -1, 0);
+  inst.mesh.position.copy(b.position);
+}
 function ejectItem(inst) {
   removeBody(inst);
   inst.lost = true;
@@ -1521,7 +1539,8 @@ function finishLid() {
   for (const inst of bag()) {
     if (topOf(inst) > H + 0.03) {
       if (inst.def.soft) squashItem(inst);
-      if (topOf(inst) > H + 0.08) ejectItem(inst);
+      if (topOf(inst) > H + 0.45) ejectItem(inst);
+      else if (topOf(inst) > H + 0.03) pressDown(inst);
     }
   }
   addCeiling();
@@ -1531,7 +1550,6 @@ function finishLid() {
   L.exit = true;
   L.air = true;
   flyBallistic(L.person, new THREE.Vector3(4, 7, 1.5), new THREE.Vector3(0, 0, -1.5), BOT);
-  L.person = new THREE.Group();
   later(2.0, startJourney);
 }
 
@@ -1791,7 +1809,11 @@ function journeyTick(dt) {
   // тяжёлые вещи кренят чемодан
   const com = bagCOM();
   const r = b.quaternion.vmult(new CANNON.Vec3(com.x, com.y - CENTER_Y, com.z));
-  b.torque.z += -r.x * S.massItems * g * 1.4;
+  b.torque.z += -r.x * S.massItems * g * 0.8;
+  // «неваляшка»: чемодан хочет стоять на колёсах, но шатается
+  const ang = 2 * Math.atan2(b.quaternion.z, b.quaternion.w);
+  const a = Math.atan2(Math.sin(ang), Math.cos(ang));
+  if (Math.abs(a) < 1.3) b.torque.z += (-a * (grounded ? 70 : 25) - b.angularVelocity.z * (grounded ? 10 : 3)) * (b.mass / 10);
   if (S.inflated) b.force.y += 0.62 * b.mass * g;
   if (S.wantJump) {
     S.wantJump = false;
@@ -2229,9 +2251,9 @@ function updateCamera(dt) {
   } else if (p === 'journey' || p === 'arrive') {
     fov = 50;
     const b = S.body;
-    const d = Math.max(14, fitDist(6.5, fov));
-    look = new THREE.Vector3(b.position.x + 2.8, b.position.y + 0.4, 0);
-    pos = new THREE.Vector3(b.position.x + 2.8, b.position.y + 4.2, d);
+    const d = Math.max(11, fitDist(5.2, fov));
+    look = new THREE.Vector3(b.position.x + 2.4, b.position.y + 0.9, 0);
+    pos = new THREE.Vector3(b.position.x + 2.4, b.position.y + 3.0, d);
   } else if (p === 'finale') {
     const d = Math.max(9, fitDist(3.6, fov));
     look = new THREE.Vector3(0.4, 1.3, 0);
@@ -2342,9 +2364,11 @@ function loop(now) {
   if (dt > 0.1) dt = 0.1;
   acc += dt;
   let n = 0;
-  while (acc >= FIX && n < 4) { fixed(FIX); acc -= FIX; n++; }
-  if (n === 4) acc = 0;
-  frame(dt);
+  try {
+    while (acc >= FIX && n < 4) { fixed(FIX); acc -= FIX; n++; }
+    if (n === 4) acc = 0;
+    frame(dt);
+  } catch (e) { if (!S.errLogged) { console.error(e); S.errLogged = true; } }
   draw();
 }
 
