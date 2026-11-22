@@ -2185,7 +2185,7 @@ function rivalTick(r, dt) {
   if (go) {
     // «резинка»: отставшие догоняют, убежавшие чуть притормаживают — гонка всегда плотная
     const diff = S.body.position.x - b.position.x;
-    const rb = diff > 25 ? 1.3 : diff > 10 ? 1.15 : diff < -20 ? 0.88 : 1;
+    const rb = diff > 40 ? 1.5 : diff > 25 ? 1.3 : diff > 10 ? 1.15 : diff < -20 ? 0.88 : 1;
     let cap = r.boostT > 0 ? 13.5 : r.speed * rb;
     if (gi.belt < 0) cap += gi.belt * 0.6;
     if (b.velocity.x < cap) b.force.x += (gi.ok ? 14 : 5) * b.mass;
@@ -2196,8 +2196,8 @@ function rivalTick(r, dt) {
     for (const [a0] of S.track.gaps) {
       if (r.coyote > 0 && x > a0 - 3.4 && x < a0 - 1.0) {
         let d = r.dec.get(a0);
-        if (d === undefined) { d = Math.random() < r.skill; r.dec.set(a0, d); }
-        if (d) jump();
+        if (d === undefined) { d = r.mercy || Math.random() < r.skill; r.dec.set(a0, d); }
+        if (d && b.velocity.x > 3.5) { jump(); r.mercy = false; }
       }
     }
     // упёрся во что-то — пробует перепрыгнуть
@@ -2211,9 +2211,9 @@ function rivalTick(r, dt) {
   if (gi.ok && Math.abs(b.velocity.y) < 2) r.safe = { x: b.position.x, y: b.position.y - HALF_Y };
   if (b.position.y < S.track.minY - 9) {
     b.position.set(Math.max(2, r.safe.x - 2), r.safe.y + HALF_Y + 1.5, 0);
-    b.velocity.set(0, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
-    r.stun = 0.8;
-    r.dec.clear();
+    b.velocity.set(5, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
+    r.stun = 0.3;
+    r.dec.clear(); r.mercy = true;
     if (Math.abs(b.position.x - S.body.position.x) < 25 && S.saidT <= 0) { toast(r.cfg.name + ' нырнул!', 1.2); S.saidT = 2.5; }
   }
   const up = b.quaternion.vmult(new CANNON.Vec3(0, 1, 0));
