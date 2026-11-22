@@ -1544,11 +1544,11 @@ function renderChecks() {
 
 function makeMarker() {
   const g = new THREE.Group();
-  const red = mesh(cone(0.14, 0.3, 4), 0xff3b3b);
+  const red = mesh(cone(0.2, 0.42, 4), 0xff3b3b);
   red.rotation.x = Math.PI;
   const warn = new THREE.Group();
-  warn.add(at(mesh(cyl(0.05, 0.05, 0.22, 5), 0xff8a00), 0, 0.1, 0));
-  warn.add(at(mesh(ico(0.06), 0xff8a00), 0, -0.1, 0));
+  warn.add(at(mesh(cyl(0.08, 0.08, 0.34, 5), 0xff8a00), 0, 0.14, 0));
+  warn.add(at(mesh(ico(0.09), 0xff8a00), 0, -0.16, 0));
   g.add(red, warn);
   g.userData = { red, warn };
   return g;
@@ -1622,7 +1622,13 @@ function startLid() {
 }
 function lidLandY() {
   const L = S.lid;
-  return H + LIDH * 0.6 + (1 - L.taps / L.need) * 0.7;
+  return H + LIDH * 0.6 + (1 - lidProg()) * 0.7;
+}
+function lidProg() {
+  const L = S.lid;
+  if (!L) return 0;
+  if (L.need === 0) return L.done ? 1 : 0;
+  return Math.min(1, L.taps / L.need);
 }
 function lidTick(dt) {
   const L = S.lid;
@@ -2538,7 +2544,7 @@ function frame(dt) {
   }
   if (S.phase === 'pack' || S.phase === 'lid') updateMarkers();
   if (S.phase === 'pack' || S.phase === 'lid') {
-    if (S.lid && !S.lid.done) S.lidAngle += (LID_OPEN * (1 - S.lid.taps / S.lid.need) - S.lidAngle) * Math.min(1, dt * 8);
+    if (S.lid && !S.lid.done) S.lidAngle += (LID_OPEN * (1 - lidProg()) - S.lidAngle) * Math.min(1, dt * 8);
     if (S.lid && S.lid.done) S.lidAngle += (0 - S.lidAngle) * Math.min(1, dt * 10);
     S.squash = Math.max(0, S.squash - dt * 4);
     S.suit.scale.set(1 + S.squash * 0.07, 1 - S.squash * 0.14, 1 + S.squash * 0.05);
