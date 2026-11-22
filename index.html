@@ -1757,6 +1757,7 @@ function startLid() {
   if (S.phase !== 'pack') return;
   if (S.held) dropHeld();
   S.phase = 'lid';
+  if (S.thrower) { S.env.remove(S.thrower); S.thrower = null; }
   packCheck();
   S.packAtClose = { ...S.pack };
   const over = bag().filter((i) => topOf(i) > H + 0.03);
@@ -2203,6 +2204,8 @@ function rivalTick(r, dt) {
   }
   uprightTorque(b, gi.ok);
   padsFor(b, r, gi.ok);
+  if (b.velocity.length() > 30) b.velocity.scale(30 / b.velocity.length(), b.velocity);
+  if (b.position.x < -15 || b.position.y > 60) b.position.y = S.track.minY - 20;
   if (gi.ok && Math.abs(b.velocity.y) < 2) r.safe = { x: b.position.x, y: b.position.y - HALF_Y };
   if (b.position.y < S.track.minY - 9) {
     b.position.set(r.safe.x - 2, r.safe.y + HALF_Y + 1.5, 0);
@@ -2223,7 +2226,12 @@ function placeNow() {
 function obstaclesTick(dt) {
   const t = S.raceT;
   for (const d of S.track.doors) {
-    const o = doorOpen(d, t);
+    let o = doorOpen(d, t);
+    // датчик, как у лифта: пока в проёме чемодан — дверь не закрывается
+    if (o < d.open) {
+      const near = [S.body, ...S.rivals.map((r) => r.b)].some((bb) => Math.abs(bb.position.x - d.x) < W / 2 + T + 0.5 && bb.position.y < d.y + 6);
+      if (near) { o = d.open; d.ph -= dt; }
+    }
     const z = -o * 3.4;
     d.b.velocity.set(0, 0, (z - d.b.position.z) / dt);
     d.b.position.z = z;
@@ -2544,6 +2552,8 @@ function journeyTick(dt) {
     toast('Оп! Поставили на колёса.', 1.2);
     sfx.pop();
   }
+  if (b.velocity.length() > 30) b.velocity.scale(30 / b.velocity.length(), b.velocity);
+  if (b.position.x < -15 || b.position.y > 60) respawn();
   if (active && b.position.x > S.track.finishX) arrive();
 }
 
