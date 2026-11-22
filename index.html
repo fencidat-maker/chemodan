@@ -2210,8 +2210,8 @@ function rivalTick(r, dt) {
   if (b.position.x < -15 || b.position.y > 60) b.position.y = S.track.minY - 20;
   if (gi.ok && Math.abs(b.velocity.y) < 2) r.safe = { x: b.position.x, y: b.position.y - HALF_Y };
   if (!gi.ok && b.velocity.length() < 0.6) r.wedgeT = (r.wedgeT || 0) + dt; else r.wedgeT = 0;
-  if (b.position.y < S.track.minY - 9 || r.wedgeT > 1.5) {
-    r.wedgeT = 0;
+  if (b.position.y < S.track.minY - 9 || r.wedgeT > 1.5 || r.coyote < -4) {
+    r.wedgeT = 0; r.coyote = 0;
     b.position.set(Math.max(2, r.safe.x - 2), r.safe.y + HALF_Y + 1.5, 0);
     b.velocity.set(5, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
     r.stun = 0.3;
