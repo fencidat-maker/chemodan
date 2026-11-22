@@ -67,6 +67,14 @@ button{font-family:inherit;color:var(--ink);border:0;cursor:pointer;touch-action
 #order .need img{width:46px;height:46px}
 #order .need div.ok{background:#EAF8EC}
 #order .need div.ok::after{content:'✓';position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;background:var(--gr);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}
+#checks{position:absolute;top:calc(var(--st) + 142px);left:10px;right:10px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.chip{background:#fff;border-radius:14px;padding:4px 4px 5px;display:flex;flex-direction:column;align-items:center;text-align:center;border:3px solid #FFD166;box-shadow:0 3px 0 rgba(43,33,64,.15);transition:border-color .2s}
+.chip.ok{border-color:#7BC96F}.chip.bad{border-color:#FF6B35}
+.chip small{font-size:11px;font-weight:700;opacity:.65;line-height:1.2}
+.chip b{font-size:13px;font-weight:900;line-height:1.15}
+.chip.ok b{color:#3f8a3a}.chip.bad b{color:#d8481c}
+.lv{position:relative;width:86%;height:10px;margin-top:4px;border-radius:999px;background:linear-gradient(90deg,#FFD9C9,#EAF8EC 35%,#EAF8EC 65%,#FFD9C9)}
+.lv i{position:absolute;top:-3px;left:50%;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#2EC4B6;box-shadow:0 0 0 2px #fff;transition:left .25s}
 #hint{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 272px);text-align:center;font-weight:700;font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(43,33,64,.5);pointer-events:none}
 #tray{position:absolute;left:10px;right:10px;bottom:calc(var(--sb) + 100px);background:#fff;border-radius:24px;padding:8px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;min-height:76px;box-shadow:0 4px 0 rgba(43,33,64,.15)}
 #tray .it{position:relative;aspect-ratio:1;border-radius:16px;background:#F4F1EC;touch-action:none}
@@ -142,7 +150,13 @@ svg.i{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:2.8;stroke
 
 <div id="pack" class="layer">
   <div id="order"><img class="face" id="clientFace" alt=""><div class="need" id="need"></div></div>
-  <div id="hint">Тащи вещи в чемодан!</div>
+  <div id="checks" class="pe-none">
+    <div class="chip" id="chOrder"><small>Заказ</small><b>0/0</b></div>
+    <div class="chip" id="chLid"><small>Крышка</small><b>—</b></div>
+    <div class="chip" id="chFrag"><small>Хрупкое</small><b>—</b></div>
+    <div class="chip" id="chBal"><small>Баланс</small><div class="lv"><i id="bub"></i></div></div>
+  </div>
+  <div id="hint">Тащи вещи в чемодан.<br>Нажми на вещь в чемодане — повернётся</div>
   <div id="tray"></div>
   <div id="packBar">
     <button class="btn green" id="closeBtn"><svg viewBox="0 0 40 32" width="36" height="30"><polygon points="4,8 36,8 36,30 4,30" fill="#FF6B35"/><polygon points="4,8 36,8 36,14 4,14" fill="#FF9A6B"/><polygon points="12,8 16,8 16,30 12,30" fill="#FFD166"/><polygon points="24,8 28,8 28,30 24,30" fill="#FFD166"/></svg>Закрыть!</button>
@@ -172,6 +186,7 @@ svg.i{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:2.8;stroke
     <div id="stats"></div>
     <div id="events"></div>
     <p id="line"></p>
+    <p id="starHint" style="margin:0;text-align:center;font-size:13px;font-weight:500;opacity:.75"></p>
   </div>
   <div id="finBar">
     <button class="btn sq" id="againBtn" aria-label="Ещё раз"><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.5"/><path d="M4 3.5v5h5"/></svg></button>
@@ -1007,7 +1022,7 @@ let uid = 0;
 function newInst(id) {
   const mesh = makeItemMesh(id);
   mesh.traverse((o) => { if (o.isMesh) o.layers.enable(1); });
-  return { uid: uid++, id, def: ITEMS[id], mesh, body: null, inBag: false, lost: false, broken: false, sx: 1, sy: 1, sz: 1, t: rnd(1, 3), yaw: 0 };
+  return { uid: uid++, id, def: ITEMS[id], mesh, body: null, inBag: false, lost: false, broken: false, sx: 1, sy: 1, sz: 1, t: rnd(1, 3), yaw: 0, lie: 0, prot: 1 };
 }
 function bag() { return S.insts.filter((i) => i.inBag && !i.lost); }
 
@@ -1069,8 +1084,8 @@ function onItemCollide(inst, e) {
   if (S.phase !== 'journey' && S.phase !== 'arrive') return;
   const other = e.body && e.body.userData && e.body.userData.inst;
   if (other && other.def.soft) return; // подушка и кот спасают хрупкое
-  if (inst.def.fragile && !inst.broken && v > inst.def.thr) breakItem(inst);
-  if (other && other.def.fragile && !other.broken && !inst.def.soft && v > other.def.thr * 1.15) breakItem(other);
+  if (inst.def.fragile && !inst.broken && v > inst.def.thr * inst.prot) breakItem(inst);
+  if (other && other.def.fragile && !other.broken && !inst.def.soft && v > other.def.thr * 1.15 * other.prot) breakItem(other);
 }
 
 function makeInner(g) {
@@ -1240,14 +1255,21 @@ function startLevel(i) {
   $('#clientFace').src = FACES[i];
   $('#hint').style.opacity = 1;
   S.firstDrop = false;
+  S.lidLine = makeLidLine();
+  S.suit.add(S.lidLine);
+  S.pack = null;
+  S.packAtClose = null;
+  S.checkT = 0;
   renderTray();
   renderOrder();
+  packCheck();
   showLayers('top', 'pack');
   requestAnimationFrame(() => setViewOffset(packOffset()));
-  later(0.6, () => toast(pick(['Пакуй всё!', 'Влезет. Наверное.', 'Клиент ждёт!'])));
+  later(0.5, () => toast('Уложи всё ниже жёлтой линии!', 2.2));
+  later(3.0, () => toast('Хрупкое — к мягкому!', 2));
 }
 function packOffset() {
-  const top = $('#order').getBoundingClientRect().bottom;
+  const top = $('#checks').getBoundingClientRect().bottom;
   const bottom = window.innerHeight - $('#tray').getBoundingClientRect().top;
   return (bottom - top) / 2;
 }
@@ -1277,48 +1299,109 @@ function renderOrder() {
   }).join('');
 }
 
+// ---------- управление упаковкой ----------
 const ray = new THREE.Raycaster();
 const ndc = new THREE.Vector2();
-const holdPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -HOLD_Y);
-function setNdc(e) { ndc.x = e.clientX / window.innerWidth * 2 - 1; ndc.y = -(e.clientY / window.innerHeight) * 2 + 1; }
-function pointOnHold(e) {
-  setNdc(e);
+const rimPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -H);
+function setNdc(x, y) { ndc.x = x / window.innerWidth * 2 - 1; ndc.y = -(y / window.innerHeight) * 2 + 1; }
+// точка на уровне края чемодана; палец поднимаем, чтобы он не закрывал вещь
+function pointOnRim(e) {
+  const lift = e.pointerType === 'touch' ? 70 : 0;
+  setNdc(e.clientX, e.clientY - lift);
   ray.setFromCamera(ndc, camera);
   const p = new THREE.Vector3();
-  return ray.ray.intersectPlane(holdPlane, p) ? p : null;
+  return ray.ray.intersectPlane(rimPlane, p) ? p : null;
 }
-function footprint(inst, yaw) {
+
+// ориентация вещи: поворот вокруг вертикали (yaw) и «набок» (lie)
+function orient(inst, yaw = inst.yaw, lie = inst.lie) {
   const s = inst.def.size;
-  const sw = Math.abs(Math.round(Math.sin(yaw))) === 1;
-  return { hx: (sw ? s.z : s.x) / 2, hz: (sw ? s.x : s.z) / 2 };
+  let x = s.x * inst.sx, y = s.y * inst.sy, z = s.z * inst.sz;
+  if (inst.def.shape === 'sphere') { const r = Math.max(x, y, z); x = y = z = r; lie = 0; }
+  if (lie) { const t = y; y = z; z = t; }
+  if (Math.abs(Math.round(Math.sin(yaw))) === 1) { const t = x; x = z; z = t; }
+  const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(lie ? Math.PI / 2 : 0, yaw, 0, 'YXZ'));
+  return { hx: x / 2, hy: y / 2, hz: z / 2, q };
 }
-function fits(inst, yaw) { const f = footprint(inst, yaw); return f.hx <= W / 2 - 0.02 && f.hz <= D / 2 - 0.02; }
-function clampXZ(inst, p) {
-  const f = footprint(inst, inst.yaw);
-  const mx = Math.max(0, W / 2 - f.hx - 0.03), mz = Math.max(0, D / 2 - f.hz - 0.03);
+function fits(inst, yaw = inst.yaw, lie = inst.lie) { const o = orient(inst, yaw, lie); return o.hx <= W / 2 - 0.02 && o.hz <= D / 2 - 0.02; }
+function canLie(inst) { const s = inst.def.size; return inst.def.shape !== 'sphere' && s.y > Math.min(s.x, s.z) * 1.25; }
+function orientations(inst) {
+  const list = [[0, 0], [Math.PI / 2, 0]];
+  if (canLie(inst)) list.push([0, 1], [Math.PI / 2, 1]);
+  return list.filter(([y, l]) => fits(inst, y, l));
+}
+function clampXZ(o, p) {
+  const mx = Math.max(0, W / 2 - o.hx - 0.03), mz = Math.max(0, D / 2 - o.hz - 0.03);
   p.x = Math.max(-mx, Math.min(mx, p.x));
   p.z = Math.max(-mz, Math.min(mz, p.z));
   return p;
 }
 
+// куда упадёт вещь: лучами вниз по её «следу»
+const _rf = new CANNON.Vec3(), _rt = new CANNON.Vec3(), _rr = new CANNON.RaycastResult();
+function landing(x, z, o) {
+  let maxY = 0;
+  for (const sx of [-1, 0, 1]) for (const sz of [-1, 0, 1]) {
+    const px = x + sx * Math.max(0, o.hx - 0.05), pz = z + sz * Math.max(0, o.hz - 0.05);
+    _rf.set(px, 9, pz); _rt.set(px, -0.5, pz);
+    _rr.reset();
+    S.inner.raycastClosest(_rf, _rt, { skipBackfaces: true }, _rr);
+    if (_rr.hasHit && _rr.hitPointWorld.y > maxY) maxY = _rr.hitPointWorld.y;
+  }
+  return maxY;
+}
+// для тапа: самое низкое свободное место и лучший поворот
+function autoPlace(inst) {
+  let best = null;
+  for (const [yaw, lie] of orientations(inst)) {
+    const o = orient(inst, yaw, lie);
+    const mx = Math.max(0, W / 2 - o.hx - 0.03), mz = Math.max(0, D / 2 - o.hz - 0.03);
+    for (let i = 0; i <= 6; i++) for (let j = 0; j <= 3; j++) {
+      const x = -mx + (2 * mx) * i / 6, z = -mz + (2 * mz) * j / 3;
+      const top = landing(x, z, o) + 2 * o.hy + Math.random() * 0.04;
+      if (!best || top < best.top) best = { top, x, z, yaw, lie };
+    }
+  }
+  if (best) { inst.yaw = best.yaw; inst.lie = best.lie; }
+  return best;
+}
+
+function makeGhost() {
+  const g = new THREE.Mesh(new THREE.BoxGeometry(1, 0.03, 1), new THREE.MeshBasicMaterial({ color: 0x7bc96f, transparent: true, opacity: 0.55, depthWrite: false }));
+  const col = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1, 0.04), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 }));
+  g.userData.col = col;
+  return g;
+}
+function updateGhost() {
+  const h = S.held;
+  if (!h) return;
+  const o = orient(h.inst);
+  const land = landing(h.target.x, h.target.z, o);
+  h.land = land;
+  const tooHigh = land + 2 * o.hy > H + 0.03;
+  h.target.y = land + o.hy + 0.5;
+  S.ghost.scale.set(o.hx * 2, 1, o.hz * 2);
+  S.ghost.position.set(h.target.x, land + 0.02, h.target.z);
+  S.ghost.material.color.setHex(tooHigh ? 0xff4d4d : 0x7bc96f);
+  S.ghost.visible = true;
+}
+
 function beginHold(inst, e, fromTray) {
   if (S.phase !== 'pack' || S.held) return;
-  if (!fits(inst, inst.yaw)) inst.yaw += Math.PI / 2;
-  S.held = { inst, fromTray, sx: e.clientX, sy: e.clientY, moved: false, target: new THREE.Vector3(0, HOLD_Y, 0) };
+  if (!fits(inst)) { const op = orientations(inst)[0]; if (op) { inst.yaw = op[0]; inst.lie = op[1]; } }
+  S.held = { inst, fromTray, sx: e.clientX, sy: e.clientY, moved: false, target: new THREE.Vector3(0, H + 1, 0) };
   if (fromTray) {
-    inst.mesh.position.set(0, HOLD_Y + 0.5, 1.2);
     inst.mesh.scale.set(inst.sx, inst.sy, inst.sz);
+    inst.mesh.position.set(0, H + 1.6, 1.4);
     S.suit.add(inst.mesh);
   } else {
-    S.held.target.set(inst.mesh.position.x, HOLD_Y, inst.mesh.position.z);
+    S.held.target.set(inst.mesh.position.x, 0, inst.mesh.position.z);
+    clampXZ(orient(inst), S.held.target);
   }
-  inst.mesh.quaternion.setFromEuler(new THREE.Euler(0, inst.yaw, 0));
-  if (!S.ring) {
-    S.ring = new THREE.Mesh(new THREE.RingGeometry(0.25, 0.34, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8 }));
-    S.ring.rotation.x = -Math.PI / 2;
-  }
-  S.suit.add(S.ring);
-  S.ring.visible = true;
+  inst.mesh.quaternion.copy(orient(inst).q);
+  if (!S.ghost) S.ghost = makeGhost();
+  S.suit.add(S.ghost);
+  updateGhost();
   sfx.pick();
   haptic('light');
 }
@@ -1326,10 +1409,10 @@ function beginHold(inst, e, fromTray) {
 window.addEventListener('pointermove', (e) => {
   const h = S.held;
   if (!h) return;
-  if (!h.moved && Math.hypot(e.clientX - h.sx, e.clientY - h.sy) > 12) h.moved = true;
+  if (!h.moved && Math.hypot(e.clientX - h.sx, e.clientY - h.sy) > 10) h.moved = true;
   if (h.moved) {
-    const p = pointOnHold(e);
-    if (p) h.target.copy(clampXZ(h.inst, p)).setY(HOLD_Y);
+    const p = pointOnRim(e);
+    if (p) { clampXZ(orient(h.inst), p); h.target.x = p.x; h.target.z = p.z; updateGhost(); }
   }
 });
 window.addEventListener('pointerup', (e) => {
@@ -1339,17 +1422,22 @@ window.addEventListener('pointerup', (e) => {
   if (h.moved && e.clientY > trayTop) {
     S.suit.remove(h.inst.mesh);
     h.inst.inBag = false;
-    S.held = null; S.ring.visible = false;
+    S.held = null;
+    S.ghost.visible = false;
     renderTray(); renderOrder();
     return;
   }
   if (!h.moved) {
     if (h.fromTray) {
-      const f = footprint(h.inst, h.inst.yaw);
-      h.target.set(rnd(-1, 1) * Math.max(0, W / 2 - f.hx - 0.05), HOLD_Y, rnd(-1, 1) * Math.max(0, D / 2 - f.hz - 0.05));
+      const b = autoPlace(h.inst);
+      if (b) { h.target.x = b.x; h.target.z = b.z; }
     } else {
-      const ny = h.inst.yaw + Math.PI / 2;
-      if (fits(h.inst, ny)) { h.inst.yaw = ny; clampXZ(h.inst, h.target); } else toast('Так не влезет!', 1);
+      // тап по вещи в чемодане — следующий поворот
+      const ops = orientations(h.inst);
+      const k = ops.findIndex(([y, l]) => Math.abs(y - h.inst.yaw) < 0.01 && l === h.inst.lie);
+      const nx = ops[(k + 1) % ops.length];
+      if (ops.length > 1) { h.inst.yaw = nx[0]; h.inst.lie = nx[1]; clampXZ(orient(h.inst), h.target); sfx.tick(); }
+      else toast('По-другому не влезет!', 1);
     }
   }
   dropHeld();
@@ -1358,17 +1446,15 @@ window.addEventListener('pointercancel', () => { if (S.held) dropHeld(); });
 
 canvas.addEventListener('pointerdown', (e) => {
   if (S.phase !== 'pack' || S.held) return;
-  setNdc(e);
+  const lift = e.pointerType === 'touch' ? 0 : 0;
+  setNdc(e.clientX, e.clientY - lift);
   ray.setFromCamera(ndc, camera);
   const meshes = bag().filter((i) => i.body).map((i) => i.mesh);
   const hit = ray.intersectObjects(meshes, true)[0];
   if (!hit) return;
-  let o = hit.object;
-  const inst = bag().find((i) => { let p = o; while (p) { if (p === i.mesh) return true; p = p.parent; } return false; });
+  const inst = bag().find((i) => { let p = hit.object; while (p) { if (p === i.mesh) return true; p = p.parent; } return false; });
   if (!inst) return;
   removeBody(inst);
-  inst.yaw = new THREE.Euler().setFromQuaternion(inst.mesh.quaternion, 'YXZ').y;
-  inst.yaw = Math.round(inst.yaw / (Math.PI / 2)) * (Math.PI / 2);
   inst.inBag = false;
   beginHold(inst, e, false);
   renderOrder();
@@ -1378,31 +1464,124 @@ function dropHeld() {
   const h = S.held;
   if (!h) return;
   const inst = h.inst;
-  const p = h.target.clone();
-  p.y = HOLD_Y;
-  const q = new CANNON.Quaternion();
-  q.setFromEuler(rnd(-0.08, 0.08), inst.yaw, rnd(-0.08, 0.08));
-  inst.mesh.position.copy(p);
-  addBody(inst, new CANNON.Vec3(p.x, p.y, p.z), q);
-  inst.body.velocity.set(0, -1, 0);
+  const o = orient(inst);
+  const land = landing(h.target.x, h.target.z, o);
+  const pos = new CANNON.Vec3(h.target.x, land + o.hy + 0.1, h.target.z);
+  inst.mesh.position.set(pos.x, pos.y, pos.z);
+  inst.mesh.quaternion.copy(o.q);
+  addBody(inst, pos, new CANNON.Quaternion(o.q.x, o.q.y, o.q.z, o.q.w));
+  inst.body.velocity.set(0, -0.5, 0);
   inst.inBag = true;
   S.held = null;
-  if (S.ring) S.ring.visible = false;
+  if (S.ghost) S.ghost.visible = false;
   sfx.drop();
   renderTray();
   renderOrder();
   if (!S.firstDrop) { S.firstDrop = true; $('#hint').style.opacity = 0; }
   if (inst.def.alive === 'hop' && Math.random() < 0.5) later(0.5, () => toast('Ко-ко-ко!', 0.9));
   if (inst.id === 'cat') later(0.6, () => toast('Кот лёг. Это его место.', 1.4));
+  S.checkT = 0.3;
 }
 
 function updateHeld(dt) {
   const h = S.held;
   if (!h) return;
   const m = h.inst.mesh;
-  m.position.lerp(h.target, 1 - Math.exp(-dt * 14));
-  m.quaternion.setFromEuler(new THREE.Euler(Math.sin(S.time * 7) * 0.08, h.inst.yaw, Math.cos(S.time * 6) * 0.08));
-  S.ring.position.set(m.position.x, 0.03, m.position.z);
+  m.position.lerp(h.target, 1 - Math.exp(-dt * 16));
+  const o = orient(h.inst);
+  const wob = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.sin(S.time * 7) * 0.06, 0, Math.cos(S.time * 6) * 0.06));
+  m.quaternion.copy(wob.multiply(o.q));
+}
+
+// ---------- цели упаковки ----------
+function packCheck() {
+  const items = bag().filter((i) => i.body);
+  // 1. заказ
+  const need = {};
+  for (const id of S.L.required) need[id] = (need[id] || 0) + 1;
+  const have = {};
+  for (const i of items) have[i.id] = (have[i.id] || 0) + 1;
+  let got = 0;
+  for (const id in need) got += Math.min(need[id], have[id] || 0);
+  // 2. торчит над линией крышки
+  let over = 0;
+  for (const i of items) { i.over = topOf(i) > H + 0.03; if (i.over) over++; }
+  // 3. хрупкое: рядом мягкое и сверху нет тяжёлого
+  const fr = new Map();
+  for (const i of items) if (i.def.fragile && !i.broken) { fr.set(i.body, { inst: i, soft: false, heavy: false }); }
+  for (const c of S.inner.contacts) {
+    for (const [a, b] of [[c.bi, c.bj], [c.bj, c.bi]]) {
+      const r = fr.get(a);
+      if (!r) continue;
+      const o = b.userData && b.userData.inst;
+      if (!o) continue;
+      if (o.def.soft) r.soft = true;
+      if (!o.def.soft && o.def.mass >= 1.2 && b.position.y > a.position.y + 0.12) r.heavy = true;
+    }
+  }
+  let fragBad = 0;
+  for (const i of items) i.fragBad = false;
+  for (const r of fr.values()) { r.inst.fragBad = !r.soft || r.heavy; r.inst.heavyOn = r.heavy; if (r.inst.fragBad) fragBad++; }
+  // 4. баланс: где центр тяжести по ширине
+  let m = 0, cx = 0;
+  for (const i of items) { cx += i.body.position.x * i.def.mass; m += i.def.mass; }
+  const bal = m ? cx / m : 0;
+  S.pack = { got, total: S.L.required.length, over, fragBad, fragTotal: fr.size, bal, count: items.length };
+  renderChecks();
+}
+function renderChecks() {
+  const p = S.pack;
+  if (!p) return;
+  const set = (id, ok, val) => { const el = $(id); el.classList.toggle('ok', ok); el.classList.toggle('bad', !ok); el.querySelector('b').textContent = val; };
+  set('#chOrder', p.got === p.total, p.got + '/' + p.total);
+  set('#chLid', p.over === 0 && p.count > 0, p.count === 0 ? '—' : p.over === 0 ? 'влезет' : 'торчит ' + p.over);
+  set('#chFrag', p.fragBad === 0, p.fragTotal === 0 ? 'нет' : p.fragBad === 0 ? 'в безопасности' : 'опасно ' + p.fragBad);
+  const balOk = Math.abs(p.bal) < 0.3;
+  $('#chBal').classList.toggle('ok', balOk);
+  $('#chBal').classList.toggle('bad', !balOk);
+  $('#bub').style.left = (50 + Math.max(-1, Math.min(1, p.bal / (W / 2))) * 45) + '%';
+}
+
+function makeMarker() {
+  const g = new THREE.Group();
+  const red = mesh(cone(0.14, 0.3, 4), 0xff3b3b);
+  red.rotation.x = Math.PI;
+  const warn = new THREE.Group();
+  warn.add(at(mesh(cyl(0.05, 0.05, 0.22, 5), 0xff8a00), 0, 0.1, 0));
+  warn.add(at(mesh(ico(0.06), 0xff8a00), 0, -0.1, 0));
+  g.add(red, warn);
+  g.userData = { red, warn };
+  return g;
+}
+function updateMarkers() {
+  const show = S.phase === 'pack' || (S.phase === 'lid' && S.lid && !S.lid.done);
+  for (const i of S.insts) {
+    const need = show && i.inBag && !i.lost && i.body && (i.over || i.fragBad);
+    if (!need) { if (i.mk) i.mk.visible = false; continue; }
+    if (!i.mk) { i.mk = makeMarker(); S.suit.add(i.mk); }
+    i.mk.visible = true;
+    i.mk.position.set(i.body.position.x, topOf(i) + 0.35 + Math.abs(Math.sin(S.time * 4 + i.uid)) * 0.15, i.body.position.z);
+    i.mk.userData.red.visible = !!i.over;
+    i.mk.userData.warn.visible = !i.over && !!i.fragBad;
+  }
+}
+function makeLidLine() {
+  const g = new THREE.Group();
+  const m = new THREE.MeshBasicMaterial({ color: 0xffd166 });
+  const seg = 0.22, gap = 0.14;
+  const addRun = (x0, z0, x1, z1) => {
+    const len = Math.hypot(x1 - x0, z1 - z0);
+    for (let t = 0; t < len; t += seg + gap) {
+      const l = Math.min(seg, len - t);
+      const k = (t + l / 2) / len;
+      const s = new THREE.Mesh(new THREE.BoxGeometry(x1 !== x0 ? l : 0.05, 0.05, z1 !== z0 ? l : 0.05), m);
+      s.position.set(x0 + (x1 - x0) * k, H, z0 + (z1 - z0) * k);
+      g.add(s);
+    }
+  };
+  const x = W / 2 - 0.03, z = D / 2 - 0.03;
+  addRun(-x, z, x, z); addRun(-x, -z, x, -z); addRun(-x, -z, -x, z); addRun(x, -z, x, z);
+  return g;
 }
 
 $('#closeBtn').addEventListener('click', () => { initAudio(); startLid(); });
@@ -1426,15 +1605,17 @@ function startLid() {
   if (!bag().length) { toast('Сначала положи что-нибудь!'); return; }
   if (S.held) dropHeld();
   S.phase = 'lid';
-  for (const i of S.insts) if (!i.inBag) i.left = true;
+  packCheck();
+  S.packAtClose = { ...S.pack };
   const over = bag().filter((i) => topOf(i) > H + 0.03);
   const person = makePerson(S.L.client);
   person.scale.setScalar(1.15);
   person.position.set(0, H + 6, 0.25);
   S.env.add(person);
-  S.lid = { need: Math.min(6, 2 + over.length), taps: 0, over, person, y: H + 6, vy: 0, air: true, first: false, done: false };
+  S.lid = { need: over.length ? Math.min(6, 2 + over.length) : 0, taps: 0, over, person, y: H + 6, vy: 0, air: true, first: false, done: false };
   $('#lidBar').style.width = '0%';
-  $('#lidText').textContent = over.length ? 'Не закрывается!' : 'Прыгай на крышку!';
+  $('#lidText').textContent = over.length ? 'Не закрывается! Прыгай!' : 'Всё ровно — закроется само!';
+  $('#jumpWrap').style.visibility = over.length ? 'visible' : 'hidden';
   showLayers('top', 'lidui');
   setViewOffset(50);
   sfx.whoosh();
@@ -1455,6 +1636,7 @@ function lidTick(dt) {
   L.person.position.y = L.y;
   const ud = L.person.userData;
   const up = L.air ? 2.6 : 0.4;
+  if (L.need === 0 && L.first) { ud.armL.rotation.z = -2.6; ud.armR.rotation.z = 2.6; }
   ud.armL.rotation.z += (-up - ud.armL.rotation.z) * 0.3;
   ud.armR.rotation.z += (up - ud.armR.rotation.z) * 0.3;
   ud.mouth.scale.y = L.air ? 3 : 1;
@@ -1465,7 +1647,15 @@ function onLidLand() {
   haptic('heavy');
   S.shake = 0.3;
   S.squash = 1;
-  if (!L.first) { L.first = true; return; }
+  if (!L.first) {
+    L.first = true;
+    if (L.need === 0) {
+      $('#lidBar').style.width = '100%';
+      later(0.15, () => toast('Щёлк! Даже прыгать не пришлось!', 1.8));
+      finishLid();
+    }
+    return;
+  }
   L.taps++;
   $('#lidBar').style.width = Math.min(100, L.taps / L.need * 100) + '%';
   burst(new THREE.Vector3(rnd(-1, 1), H + 0.6, 1.2), 0xffffff, 6, 2, 0.06);
@@ -1719,6 +1909,11 @@ function startJourney() {
   S.track = buildTrack(L);
   S.env.add(S.suit);
   S.suit.scale.set(1, 1, 1);
+  if (S.lidLine) { S.suit.remove(S.lidLine); S.lidLine = null; }
+  if (S.ghost) S.suit.remove(S.ghost);
+  for (const i of S.insts) if (i.mk) { S.suit.remove(i.mk); i.mk = null; }
+  // как упаковал хрупкое, так оно и поедет
+  for (const i of bag()) if (i.def.fragile) i.prot = i.fragBad ? (i.heavyOn ? 0.7 : 0.85) : 1.8;
   S.sc.lidPivot.rotation.x = 0;
   S.lidAngle = 0;
   S.massItems = bag().reduce((s, i) => s + i.def.mass, 0);
@@ -2167,11 +2362,15 @@ function computeResults() {
   const all = got === total;
   const clean = S.stats.broken === 0 && S.stats.ejected === 0;
   const fast = S.journeyT <= L.par;
-  const stars = 1 + (all ? 1 : 0) + (all && clean && fast ? 1 : 0);
+  const pk = S.packAtClose || { over: 1, fragBad: 1, bal: 1 };
+  const lidOk = pk.over === 0;
+  const packN = (pk.got === pk.total ? 1 : 0) + (lidOk ? 1 : 0) + (pk.fragBad === 0 ? 1 : 0) + (Math.abs(pk.bal) < 0.3 ? 1 : 0);
+  const stars = 1 + (all ? 1 : 0) + (all && clean && lidOk ? 1 : 0);
   const jar = bag().some((i) => i.id === 'jar' && !i.broken);
   const st = S.stats;
   const absurd = 100 * (st.eggs + st.pigeons + st.ejected + st.broken + st.falls + st.squashed) + (st.inflated ? 300 : 0) + st.jumps * 20;
   const ev = [];
+  ev.push(packN === 4 ? 'Идеальная упаковка' : 'Упаковка ' + packN + '/4');
   if (st.eggs) ev.push('Яйцо в дороге');
   if (st.pigeons) ev.push('Голубей: ' + st.pigeons);
   if (st.falls) ev.push('Нырков: ' + st.falls);
@@ -2182,7 +2381,10 @@ function computeResults() {
   if (bag().some((i) => i.id === 'gnome')) ev.push('Гном что-то знает');
   let line = all ? L.win : jar ? L.jarLine : L.fail;
   if (!all && !clean && !jar && st.broken > 1) line = L.fail;
-  return { stars, got, total, all, broken: st.broken, absurd, ev, line, fast };
+  let next = '';
+  if (stars === 1) next = 'Вторая ★ — довези всё, что просил клиент';
+  else if (stars === 2) next = 'Третья ★ — ничего не разбить и закрыть крышку без прыжков';
+  return { stars, got, total, all, broken: st.broken, absurd: absurd + (packN === 4 ? 500 : 0), ev, line, fast, next };
 }
 
 function showResults(r) {
@@ -2191,6 +2393,8 @@ function showResults(r) {
     + `<div style="background:#FFF6D9"><b>+${r.absurd}</b><small>за абсурд</small></div>`;
   $('#events').innerHTML = r.ev.slice(0, 4).map((e) => `<span>${e}</span>`).join('');
   $('#line').textContent = '«' + r.line + '»';
+  $('#starHint').textContent = r.next;
+  $('#starHint').style.display = r.next ? '' : 'none';
   const stars = $('#stars').children;
   for (let i = 0; i < 3; i++) stars[i].classList.remove('on');
   for (let i = 0; i < r.stars; i++) later(0.35 + i * 0.35, () => { stars[i].classList.add('on'); sfx.star(i); haptic('light'); });
@@ -2245,9 +2449,9 @@ function updateCamera(dt) {
     look = new THREE.Vector3(0, 0.9, 0);
     pos = new THREE.Vector3(0, 3.2, d);
   } else if (p === 'pack') {
-    const d = Math.max(7.5, fitDist(2.05, fov));
-    look = new THREE.Vector3(0, 0.45, 0.15);
-    pos = look.clone().add(new THREE.Vector3(0, 1.15, 1).normalize().multiplyScalar(d));
+    const d = Math.max(8, fitDist(2.0, fov));
+    look = new THREE.Vector3(0, 0.5, 0.05);
+    pos = look.clone().add(new THREE.Vector3(0, 2.1, 1).normalize().multiplyScalar(d));
   } else if (p === 'lid') {
     const d = Math.max(9, fitDist(2.6, fov));
     look = new THREE.Vector3(0, 1.5, 0);
@@ -2327,7 +2531,12 @@ function frame(dt) {
     if (S.menuSuit) { S.menuSuit.rotation.y = Math.sin(S.time * 0.5) * 0.6; S.menuSuit.position.y = Math.abs(Math.sin(S.time * 2.2)) * 0.25; }
   }
   if (['pack', 'lid', 'journey', 'arrive'].includes(S.phase)) syncItems();
-  if (S.phase === 'pack') updateHeld(dt);
+  if (S.phase === 'pack') {
+    updateHeld(dt);
+    S.checkT -= dt;
+    if (S.checkT <= 0) { S.checkT = 0.25; packCheck(); }
+  }
+  if (S.phase === 'pack' || S.phase === 'lid') updateMarkers();
   if (S.phase === 'pack' || S.phase === 'lid') {
     if (S.lid && !S.lid.done) S.lidAngle += (LID_OPEN * (1 - S.lid.taps / S.lid.need) - S.lidAngle) * Math.min(1, dt * 8);
     if (S.lid && S.lid.done) S.lidAngle += (0 - S.lidAngle) * Math.min(1, dt * 10);
