@@ -2212,7 +2212,9 @@ function rivalTick(r, dt) {
   if (!gi.ok && b.velocity.length() < 0.6) r.wedgeT = (r.wedgeT || 0) + dt; else r.wedgeT = 0;
   if (b.position.y < S.track.minY - 9 || r.wedgeT > 1.5 || r.coyote < -4) {
     r.wedgeT = 0; r.coyote = 0;
-    b.position.set(Math.max(2, r.safe.x - 2), r.safe.y + HALF_Y + 1.5, 0);
+    let rx = r.safe.x - 2;
+    for (const [a0] of S.track.gaps) if (a0 > r.safe.x - 1 && a0 - rx < 7) rx = a0 - 7;
+    b.position.set(Math.max(2, rx), r.safe.y + HALF_Y + 0.6, 0);
     b.velocity.set(5, 0, 0); b.angularVelocity.set(0, 0, 0); b.quaternion.set(0, 0, 0, 1);
     r.stun = 0.3;
     r.dec.clear(); r.mercy = true;
